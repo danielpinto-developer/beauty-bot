@@ -5,6 +5,7 @@ from functions.utils.escalation import should_escalate
 from firebase_admin import firestore, initialize_app, credentials
 import firebase_admin
 import os, json
+from fastapi.responses import JSONResponse
 
 # Correct initialization check
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
@@ -97,3 +98,14 @@ async def toggle_bot(phone: str):
     new_status = not current.get("paused", False)
     doc_ref.set({"paused": new_status})
     return {"phone": phone, "bot_paused": new_status}
+
+@app.get("/firebase-config")
+def firebase_config():
+    return JSONResponse({
+        "apiKey": os.getenv("FIREBASE_API_KEY"),
+        "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
+        "projectId": os.getenv("FIREBASE_PROJECT_ID"),
+        "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
+        "messagingSenderId": os.getenv("FIREBASE_MSG_SENDER_ID"),
+        "appId": os.getenv("FIREBASE_APP_ID"),
+    })
