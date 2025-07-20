@@ -3,22 +3,23 @@ from functions.utils.whatsapp_api import send_whatsapp_message
 from functions.utils.openrouter_api import get_openrouter_reply
 from functions.utils.escalation import should_escalate
 from firebase_admin import firestore, initialize_app, credentials
-import firebase_admin
-import os, json
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+import firebase_admin
+import os, json
 import logging
 
 app = FastAPI()
 
 origins = [
-    "https://www.beautyblossoms.net",
+    "http://127.0.0.1:5501",
     "http://localhost:5501",
+    "https://www.beautyblossoms.net"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://www.beautyblossoms.net"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +27,7 @@ app.add_middleware(
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.info("✅ CORS middleware added with allowed origins: %s", origins)
+logger.info("✅ CORS middleware registered with: %s", origins)
 
 # Correct initialization check
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
