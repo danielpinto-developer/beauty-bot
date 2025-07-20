@@ -6,8 +6,17 @@ from firebase_admin import firestore, initialize_app, credentials
 import firebase_admin
 import os, json
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Correct initialization check
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
