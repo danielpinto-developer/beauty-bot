@@ -3,10 +3,11 @@ from functions.utils.whatsapp_api import send_whatsapp_message
 from functions.utils.openrouter_api import get_openrouter_reply
 from functions.utils.escalation import should_escalate
 from firebase_admin import firestore, initialize_app, credentials
+import firebase_admin
 import os
 
-# Initialize Firebase Admin
-if not firestore._apps:
+# ✅ Correct initialization check
+if not firebase_admin._apps:
     cred = credentials.Certificate("firebase_config.json")
     initialize_app(cred)
 
