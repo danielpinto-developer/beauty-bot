@@ -1,22 +1,21 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from firebase_admin import firestore, initialize_app, credentials
 from functions.utils.whatsapp_api import send_whatsapp_message
 from functions.utils.openrouter_api import get_openrouter_reply
 from functions.utils.escalation import should_escalate
-from firebase_admin import firestore, initialize_app, credentials
-from fastapi.responses import JSONResponse
 import firebase_admin
 import os, json
 
 app = FastAPI()
 
-# Correct initialization check
+# Firebase Admin Init
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
 if not firebase_json:
     raise Exception("FIREBASE_CONFIG_JSON is missing!")
 
 cred = credentials.Certificate(json.loads(firebase_json))
 initialize_app(cred)
-
 db = firestore.client()
 
 @app.get("/")
@@ -41,26 +40,21 @@ async def receive_message(request: Request):
         phone = message_data["from"]
         text = message_data.get("text", {}).get("body", "")
 
-        # Bot pause check
         paused_doc = db.collection("bot_paused").document(phone).get()
         if paused_doc.exists and paused_doc.to_dict().get("paused", False):
-            print(f"⏸️ Bot paused for {phone}")
             return {"status": "bot paused"}
 
-        # Save user message
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "user",
             "message": text,
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        # Decide reply
         if should_escalate(text):
             reply = "En un momento te contactamos con una persona del equipo 💬"
         else:
             reply = await get_openrouter_reply(text)
 
-        # Save bot reply
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "bot",
             "message": reply,
@@ -71,8 +65,7 @@ async def receive_message(request: Request):
         return {"status": "message sent"}
 
     except Exception as e:
-        print("❌ Error in /webhook:", e)
-        return {"error": str(e)}, 500
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 @app.post("/send")
 async def send_admin_message(data: dict):
@@ -80,7 +73,7 @@ async def send_admin_message(data: dict):
     message = data.get("message")
 
     if not phone or not message:
-        return {"error": "Missing phone or message"}, 400
+        return JSONResponse(content={"error": "Missing phone or message"}, status_code=400)
 
     await send_whatsapp_message(phone, message)
 
@@ -99,20 +92,3 @@ async def toggle_bot(phone: str):
     new_status = not current.get("paused", False)
     doc_ref.set({"paused": new_status})
     return {"phone": phone, "bot_paused": new_status}
-
-@app.get("/firebase-config")
-def firebase_config():
-    try:
-        config = {
-            "apiKey": os.environ["FIREBASE_API_KEY"],
-            "authDomain": os.environ["FIREBASE_AUTH_DOMAIN"],
-            "projectId": os.environ["FIREBASE_PROJECT_ID"],
-            "storageBucket": os.environ["FIREBASE_STORAGE_BUCKET"],
-            "messagingSenderId": os.environ["FIREBASE_MSG_SENDER_ID"],
-            "appId": os.environ["FIREBASE_APP_ID"],
-        }
-        logger.info("✅ /firebase-config served successfully.")
-        return config
-    except KeyError as e:
-        logger.error("❌ Missing env var in /firebase-config: %s", str(e))
-        return {"error": f"Missing env var: {str(e)}"}, 500
