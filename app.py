@@ -7,6 +7,8 @@ import firebase_admin
 import os, json
 from fastapi.responses import JSONResponse
 
+app = FastAPI()
+
 # Correct initialization check
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
 if not firebase_json:
@@ -101,11 +103,13 @@ async def toggle_bot(phone: str):
 
 @app.get("/firebase-config")
 def firebase_config():
-    return JSONResponse({
-        "apiKey": os.getenv("FIREBASE_API_KEY"),
-        "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
-        "projectId": os.getenv("FIREBASE_PROJECT_ID"),
-        "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
-        "messagingSenderId": os.getenv("FIREBASE_MSG_SENDER_ID"),
-        "appId": os.getenv("FIREBASE_APP_ID"),
-    })
+    config = {
+        "apiKey": os.environ["FIREBASE_API_KEY"],
+        "authDomain": os.environ["FIREBASE_AUTH_DOMAIN"],
+        "projectId": os.environ["FIREBASE_PROJECT_ID"],
+        "storageBucket": os.environ["FIREBASE_STORAGE_BUCKET"],
+        "messagingSenderId": os.environ["FIREBASE_MESSAGING_SENDER_ID"],
+        "appId": os.environ["FIREBASE_APP_ID"]
+        # "measurementId": os.environ.get("FIREBASE_MEASUREMENT_ID", "")
+    }
+    return JSONResponse(content=config)
