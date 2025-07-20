@@ -4,12 +4,15 @@ from functions.utils.openrouter_api import get_openrouter_reply
 from functions.utils.escalation import should_escalate
 from firebase_admin import firestore, initialize_app, credentials
 import firebase_admin
-import os
+import os, json
 
-# ✅ Correct initialization check
-if not firebase_admin._apps:
-    cred = credentials.ApplicationDefault()
-    initialize_app(cred)
+# Correct initialization check
+firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
+if not firebase_json:
+    raise Exception("FIREBASE_CONFIG_JSON is missing!")
+
+cred = credentials.Certificate(json.loads(firebase_json))
+initialize_app(cred)
 
 db = firestore.client()
 app = FastAPI()
