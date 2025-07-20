@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
-from utils.whatsapp_api import send_whatsapp_message
-from utils.openrouter_api import get_openrouter_reply
-from utils.escalation import should_escalate
+from functions.utils.whatsapp_api import send_whatsapp_message
+from functions.utils.openrouter_api import get_openrouter_reply
+from functions.utils.escalation import should_escalate
 from firebase_admin import firestore, initialize_app, credentials
 import os
 
