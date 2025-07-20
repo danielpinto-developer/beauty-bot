@@ -7,8 +7,14 @@ import firebase_admin
 import os, json
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 app = FastAPI()
+
+origins = [
+    "https://www.beautyblossoms.net",
+    "http://localhost:5501",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,6 +23,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("✅ CORS middleware added with allowed origins: %s", origins)
 
 # Correct initialization check
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
@@ -112,12 +122,17 @@ async def toggle_bot(phone: str):
 
 @app.get("/firebase-config")
 def firebase_config():
-    config = {
-        "apiKey": os.environ["FIREBASE_API_KEY"],
-        "authDomain": os.environ["FIREBASE_AUTH_DOMAIN"],
-        "projectId": os.environ["FIREBASE_PROJECT_ID"],
-        "storageBucket": os.environ["FIREBASE_STORAGE_BUCKET"],
-        "messagingSenderId": os.environ["FIREBASE_MSG_SENDER_ID"],
-        "appId": os.environ["FIREBASE_APP_ID"]
-    }
-    return JSONResponse(content=config)
+    try:
+        config = {
+            "apiKey": os.environ["FIREBASE_API_KEY"],
+            "authDomain": os.environ["FIREBASE_AUTH_DOMAIN"],
+            "projectId": os.environ["FIREBASE_PROJECT_ID"],
+            "storageBucket": os.environ["FIREBASE_STORAGE_BUCKET"],
+            "messagingSenderId": os.environ["FIREBASE_MSG_SENDER_ID"],
+            "appId": os.environ["FIREBASE_APP_ID"],
+        }
+        logger.info("✅ /firebase-config served successfully.")
+        return config
+    except KeyError as e:
+        logger.error("❌ Missing env var in /firebase-config: %s", str(e))
+        return {"error": f"Missing env var: {str(e)}"}, 500
