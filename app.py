@@ -4,30 +4,10 @@ from functions.utils.openrouter_api import get_openrouter_reply
 from functions.utils.escalation import should_escalate
 from firebase_admin import firestore, initialize_app, credentials
 from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
 import os, json
-import logging
 
 app = FastAPI()
-
-origins = [
-    "http://127.0.0.1:5501",
-    "http://localhost:5501",
-    "https://www.beautyblossoms.net"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-logger.info("✅ CORS middleware registered with: %s", origins)
 
 # Correct initialization check
 firebase_json = os.environ.get("FIREBASE_CONFIG_JSON")
@@ -38,7 +18,6 @@ cred = credentials.Certificate(json.loads(firebase_json))
 initialize_app(cred)
 
 db = firestore.client()
-app = FastAPI()
 
 @app.get("/")
 def root():
@@ -52,7 +31,7 @@ async def verify_webhook(request: Request):
         and params.get("hub.verify_token") == "beauty-bot-token"
     ):
         return int(params.get("hub.challenge"))
-    return {"error": "Unauthorized"}, 403
+    return JSONResponse(content={"error": "Unauthorized"}, status_code=403)
 
 @app.post("/webhook")
 async def receive_message(request: Request):
