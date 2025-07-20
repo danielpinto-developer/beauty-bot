@@ -8,7 +8,7 @@ import os
 
 # ✅ Correct initialization check
 if not firebase_admin._apps:
-    cred = credentials.Certificate("firebase_config.json")
+    cred = credentials.ApplicationDefault()
     initialize_app(cred)
 
 db = firestore.client()
