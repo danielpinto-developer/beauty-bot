@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from firebase_admin import firestore, initialize_app, credentials
-from functions.utils.whatsapp_api import send_whatsapp_message
-from functions.utils.openrouter_api import get_openrouter_reply
-from functions.utils.escalation import should_escalate
+from whatsapp_api import send_whatsapp_message
+from openrouter_api import get_openrouter_reply
 import firebase_admin
-import os, json
+import os, json, requests
 
 app = FastAPI()
 
@@ -50,7 +49,15 @@ async def receive_message(request: Request):
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        if should_escalate(text):
+        # 🚀 Call BERT (Cloud Run) to get intent
+        intent_response = requests.post(
+            "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
+            json={"text": text}
+        ).json()
+
+        intent = intent_response.get("intent")
+
+        if intent == "escalate_to_human":
             reply = "En un momento te contactamos con una persona del equipo 💬"
         else:
             reply = await get_openrouter_reply(text)
