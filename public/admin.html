@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beauty Blossoms - Admin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background-color: #f8f6f2;
+        font-family: "Segoe UI", sans-serif;
+      }
+      .nav-tabs {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        width: 100%;
+      }
+      .nav-tabs .nav-link.active {
+        background-color: #1c1c1c;
+        color: #fff;
+      }
+      .nav-tabs .nav-link {
+        color: #1c1c1c;
+        font-weight: 500;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.9rem;
+        width: 100px;
+      }
+      .tab-content {
+        padding-top: 1rem;
+      }
+      .section-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+      .calendar-strip {
+        max-width: 960px;
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        scroll-snap-type: x mandatory;
+      }
+      .calendar-day {
+        margin-bottom: 1rem;
+        min-width: 250px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+      }
+      .staff-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        margin-bottom: 0.75rem;
+      }
+      .badge {
+        background-color: #f8f8f8;
+        color: #000;
+        font-size: 1rem;
+      }
+      .badge-staff {
+        font-size: 1rem;
+        padding: 0.35em 0.6em;
+        border-radius: 6px;
+        font-weight: 500;
+        color: white;
+        margin-right: 0.5rem;
+        width: 65px;
+        text-align: center;
+      }
+      .lleno {
+        background-color: green;
+      }
+      .libre {
+        background-color: rgb(138, 0, 0);
+      }
+      .appt-time {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+      }
+      .appt-card {
+        display: flex;
+        justify-content: space-between;
+        min-width: 77vw;
+        max-width: 115vw;
+        min-height: 17vw;
+        background: #f8f8f8;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        align-items: center;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+        padding: 0.5rem 0.8rem;
+        margin-bottom: 0.5rem;
+      }
+      select:invalid {
+        color: #5c5f62; /* Bootstrap placeholder gray */
+      }
+      .scroll-service {
+        max-width: 180px;
+        white-space: nowrap;
+        overflow-x: auto;
+        display: inline-block;
+        scrollbar-width: none; /* Firefox */
+      }
+      .scroll-service::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+      }
+      #chatWindow {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .chat-bubble {
+        max-width: 90%;
+        padding: 10px 14px;
+        border-radius: 16px;
+        font-size: 14px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        display: inline-block;
+      }
+
+      .user-message {
+        background-color: #dce7c5 !important;
+        color: #000 !important;
+        align-self: flex-start !important;
+        text-align: left !important;
+        border-top-left-radius: 0 !important;
+      }
+
+      .admin-message {
+        background-color: #fff2c1 !important;
+        color: #000 !important;
+        align-self: flex-end !important;
+        text-align: left !important;
+        border-top-right-radius: 0 !important;
+      }
+      @media (min-width: 768px) {
+        .admin-container {
+          display: flex;
+          justify-content: center;
+          gap: 2rem;
+          padding: 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        #chatThreads {
+          width: 25%;
+          max-height: 80vh;
+          overflow-y: auto;
+          border-right: 1px solid #ddd;
+          padding-right: 1rem;
+        }
+
+        #chatWindow {
+          width: 75%;
+          max-height: 80vh;
+          overflow-y: auto;
+          padding-left: 1rem;
+          border-left: 1px solid #eee;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-4">
+      <h2 class="text-center mb-4" style="font-weight: bold">
+        BB27 Studio Dashboard
+      </h2>
+
+      <!-- Nav tabs -->
+      <ul
+        class="nav nav-tabs justify-content-center"
+        id="adminTabs"
+        role="tablist"
+      >
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            data-bs-toggle="tab"
+            data-bs-target="#calendar"
+          >
+            🗓️ Agenda
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            data-bs-toggle="tab"
+            data-bs-target="#appointments"
+          >
+            📅 Citas
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            data-bs-toggle="tab"
+            data-bs-target="#messages"
+          >
+            💬 Inbox
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#stats">
+            📈 Datos
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content mt-3">
+        <div class="tab-pane fade show active" id="calendar"></div>
+        <div class="tab-pane fade" id="appointments">
+          <!-- 📌 Toggleable Form Section for Nueva Cita -->
+          <div class="section-card mb-4">
+            <div class="section-title" id="formTitle">📝 Nueva Cita</div>
+            <button
+              id="toggleFormBtn"
+              class="btn btn-success w-100 mb-3"
+              style="font-size: 25px"
+            >
+              <strong>+</strong>
+            </button>
+            <form id="bookingForm" class="row g-3 mb-4 d-none">
+              <!-- Servicio -->
+              <div class="col-12" id="servicesWrapper">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Servicio"
+                  name="service"
+                  list="serviceOptions"
+                  required
+                  oninput="maybeAddAnotherService(this)"
+                />
+              </div>
+
+              <!-- Teléfono + Clienta -->
+              <div class="col-6">
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="clientPhone"
+                  placeholder="Teléfono"
+                  required
+                />
+              </div>
+              <div class="col-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="clientName"
+                  placeholder="Clienta"
+                  required
+                />
+              </div>
+
+              <!-- Estilista + Duración -->
+              <div class="col-6">
+                <select
+                  class="form-select"
+                  id="staff_id"
+                  required
+                  style="font-size: 1rem"
+                >
+                  <option value="" disabled selected hidden>Estilista</option>
+                  <option value="Hatzi">Hatzi</option>
+                  <option value="Lucy">Lucy</option>
+                  <option value="Vale">Vale</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="duration"
+                  placeholder="Duración (min)"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <!-- Fecha + Hora -->
+              <div class="col-6 position-relative">
+                <input
+                  type="date"
+                  class="form-control"
+                  id="date"
+                  required
+                  style="color: transparent"
+                  oninput="this.style.color = '#212529'"
+                  Set
+                  to
+                  Bootstrap
+                  default
+                  text
+                  --
+                />
+                <span
+                  id="fechaLabel"
+                  style="
+                    position: absolute;
+                    top: 50%;
+                    left: 1.3rem;
+                    transform: translateY(-50%);
+                    color: #5c5f62;
+                    pointer-events: none;
+                    font-size: 1rem;
+                  "
+                >
+                  Fecha
+                </span>
+              </div>
+
+              <div class="col-6">
+                <select class="form-select" id="time" required>
+                  <option value="" disabled selected hidden>Hora</option>
+                  <option value="09:00">9:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="13:00">1:00 PM</option>
+                  <option value="15:00">3:00 PM</option>
+                  <option value="18:00">6:00 PM</option>
+                </select>
+              </div>
+
+              <!-- Precio + Anticipo-->
+
+              <div class="col-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="price"
+                  placeholder="Precio"
+                  min="0"
+                  step="1"
+                  required
+                />
+              </div>
+              <div class="col-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="deposit"
+                  placeholder="Anticipo"
+                  min="0"
+                  step="1"
+                />
+              </div>
+
+              <!-- Buttons -->
+              <div class="col-12 d-flex gap-3">
+                <div class="flex-grow-1">
+                  <button
+                    type="submit"
+                    class="btn btn-success w-100"
+                    id="submitBtn"
+                  >
+                    Agendar
+                  </button>
+                </div>
+                <div class="flex-grow-1">
+                  <button
+                    type="button"
+                    class="btn btn-danger w-100"
+                    id="cancelBtn"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </form>
+            <datalist id="serviceOptions">
+              <!-- Options will be injected by JS -->
+            </datalist>
+          </div>
+          <div class="section-card mb-4">
+            <div class="section-title">📥 Solicitudes Pendientes</div>
+            <div id="pendingRequests"></div>
+          </div>
+          <div class="section-card mb-4">
+            <div class="section-title">⏳ Citas Pendientes</div>
+            <div id="reservedAppointments"></div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="messages">
+          <div class="section-card">
+            <div class="section-title">Centro de Mensajes</div>
+            <div class="row">
+              <div class="col-md-4 border-end">
+                <ul id="chatThreads" class="list-group mb-3"></ul>
+              </div>
+              <div class="col-md-8 d-flex flex-column" style="height: 500px">
+                <div
+                  id="chatWindow"
+                  class="flex-grow-1 overflow-auto mb-3 p-3 border"
+                  style="background: #f0f0f0; border-radius: 8px"
+                ></div>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="messageInput"
+                    class="form-control"
+                    placeholder="Escribe un mensaje..."
+                  />
+                  <button class="btn btn-dark" id="sendMessageBtn">
+                    Enviar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="stats">
+          <div class="section-card">
+            <div class="section-title">Estadísticas de Clientes</div>
+            <div class="card p-3 mb-3 shadow-sm">
+              <div class="d-flex flex-column gap-2">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                  <input
+                    type="date"
+                    id="startDate"
+                    class="form-control form-control-sm"
+                  />
+                  <input
+                    type="date"
+                    id="endDate"
+                    class="form-control form-control-sm"
+                  />
+                </div>
+                <div
+                  class="d-flex justify-content-between align-items-center px-1 px-md-2"
+                >
+                  <span id="fillRate" class="text-primary fw-bold">0%</span>
+                  <span id="totalRevenue" class="text-success fw-bold"
+                    >$0.00</span
+                  >
+                </div>
+                <div
+                  class="btn-group btn-group-sm flex-wrap justify-content-center justify-content-md-end"
+                  role="group"
+                >
+                  <button
+                    class="btn btn-outline-secondary"
+                    onclick="setQuickRange('today')"
+                  >
+                    Hoy
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary"
+                    onclick="setQuickRange('thisWeek')"
+                  >
+                    Esta Semana
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary"
+                    onclick="setQuickRange('lastWeek')"
+                  >
+                    Semana Pasada
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary"
+                    onclick="setQuickRange('thisMonth')"
+                  >
+                    Este Mes
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary"
+                    onclick="setQuickRange('lastMonth')"
+                  >
+                    Mes Pasado
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card p-3 mb-3 shadow-sm">
+                  <h5 id="topServicesTitle" style="cursor: pointer">
+                    📊 Servicios más solicitados
+                  </h5>
+                  <canvas id="topServicesChart" height="200"></canvas>
+                  <button
+                    id="backToCategories"
+                    class="btn btn-sm btn-outline-dark mt-2 d-none"
+                    onclick="resetToCategories()"
+                  >
+                    🔙 Volver a Categorías
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card p-3 mb-3 shadow-sm">
+                  <h5>🏆 Top 5 Servicios Generales</h5>
+                  <canvas id="top5ServicesChart" height="180"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card p-3 mb-3 shadow-sm">
+                  <h5>📅 Citas por Día</h5>
+                  <canvas id="appointmentsPerDayChart" height="180"></canvas>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card p-3 mb-3 shadow-sm">
+                  <h5>🧍‍♀️ Citas por Staff</h5>
+                  <canvas id="staffPerformanceChart" height="180"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card p-3 mb-3 shadow-sm">
+                  <h5>🕓 Horas Más Populares</h5>
+                  <canvas id="popularTimesChart" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card p-3 mb-3 shadow-sm">
+                  <h5>👥 Nuevos vs Recurrentes</h5>
+                  <canvas id="clientTypeChart" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase, Chart.js, and App Logic -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+      // === YOUR ENTIRE SCRIPT AS ORIGINALLY POSTED (long, full, unchanged) ===
+      import {
+        Chart,
+        PieController,
+        ArcElement,
+        BarController,
+        BarElement,
+        CategoryScale,
+        LinearScale,
+        LineController,
+        LineElement,
+        PointElement,
+        Tooltip,
+        Legend,
+        Title,
+      } from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/+esm";
+      Chart.register(
+        PieController,
+        ArcElement,
+        BarController,
+        BarElement,
+        CategoryScale,
+        LinearScale,
+        LineController,
+        LineElement,
+        PointElement,
+        Tooltip,
+        Legend,
+        Title
+      );
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        setDoc,
+        getDoc,
+        deleteDoc,
+        addDoc,
+        doc,
+        query,
+        orderBy,
+        serverTimestamp,
+        updateDoc,
+        onSnapshot,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAO6w0ZXugY8nyuMpwDq32FlTmrqWLNtJc",
+        authDomain: "beauty-blossoms-629c9.firebaseapp.com",
+        projectId: "beauty-blossoms-629c9",
+        storageBucket: "beauty-blossoms-629c9.appspot.com",
+        messagingSenderId: "320221601178",
+        appId: "1:320221601178:web:f8f6e4fc8fee6cf9cd2e23",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const chartInstances = {};
+      let currentCategoryView = null;
+      const form = document.getElementById("bookingForm");
+
+      const chatThreadsEl = document.getElementById("chatThreads");
+      const chatWindowEl = document.getElementById("chatWindow");
+      const sendMessageBtn = document.getElementById("sendMessageBtn");
+
+      // Load chat list in real-time
+      const loadChatThreads = () => {
+        const chatsCol = collection(db, "chats");
+
+        onSnapshot(chatsCol, (snapshot) => {
+          chatThreadsEl.innerHTML = "";
+          snapshot.forEach((docSnap) => {
+            const userId = docSnap.id;
+            const li = document.createElement("li");
+            li.className = "list-group-item list-group-item-action";
+            li.textContent = `📱 ${userId}`;
+            li.onclick = () => loadMessagesForUser(userId);
+            chatThreadsEl.appendChild(li);
+          });
+        });
+      };
+
+      // Load messages for one user in real-time
+      const loadMessagesForUser = async (userId) => {
+        chatWindowEl.innerHTML = "<div>Cargando mensajes...</div>";
+
+        const msgRef = collection(db, "chats", userId, "messages");
+        const q = query(msgRef, orderBy("timestamp"));
+
+        onSnapshot(q, (snapshot) => {
+          chatWindowEl.innerHTML = "";
+
+          snapshot.forEach((msgDoc) => {
+            const { direction, text } = msgDoc.data();
+
+            console.log(`[Message] ${direction}`, text);
+
+            const bubble = document.createElement("div");
+            bubble.classList.add("chat-bubble");
+            bubble.classList.add(
+              direction === "inbound" ? "user-message" : "admin-message"
+            );
+
+            bubble.textContent = text;
+            chatWindowEl.appendChild(bubble);
+          });
+
+          chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
+        });
+      };
+
+      // Send message
+      sendMessageBtn.addEventListener("click", async () => {
+        const text = messageInput.value.trim();
+        if (!text || !activePhone) return;
+
+        await addDoc(collection(db, "chats", activePhone, "messages"), {
+          sender: "admin",
+          text,
+          timestamp: serverTimestamp(),
+        });
+
+        messageInput.value = "";
+      });
+
+      // Init
+      loadChatThreads();
+
+      const chatThreadsList = document.getElementById("chatThreads");
+      const messageInput = document.getElementById("messageInput");
+
+      let activePhone = null;
+
+      // Load message history for a user
+      async function loadMessages(phone) {
+        activePhone = phone;
+        chatWindowEl.innerHTML = "";
+
+        const messagesSnapshot = await db
+          .collection("chats")
+          .doc(phone)
+          .collection("messages")
+          .orderBy("timestamp", "asc")
+          .get();
+
+        messagesSnapshot.forEach((doc) => {
+          const { sender, text } = doc.data();
+          const msgDiv = document.createElement("div");
+          msgDiv.textContent = text;
+          msgDiv.className =
+            sender === "user"
+              ? "text-start mb-2 p-2 bg-white rounded"
+              : "text-end mb-2 p-2 bg-light rounded";
+          chatWindowEl.appendChild(msgDiv);
+        });
+
+        chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
+      }
+
+      // Send new message manually
+      sendMessageBtn.addEventListener("click", async () => {
+        const text = messageInput.value.trim();
+        if (!text || !activePhone) return;
+
+        await db
+          .collection("chats")
+          .doc(activePhone)
+          .collection("messages")
+          .add({
+            sender: "admin",
+            text,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+
+        messageInput.value = "";
+        await loadMessages(activePhone);
+      });
+
+      // Load threads on start
+      loadChatThreads();
+
+      const categoryMap = {
+        Tinte: "Cabello",
+        Corte: "Cabello",
+        Alaciado: "Cabello",
+        Keratina: "Cabello",
+        Nanoplastia: "Cabello",
+        "Efectos de color": "Cabello",
+        Trenzas: "Cabello",
+        Extensiones: "Cabello",
+        Tratamientos: "Cabello",
+        Clásicas: "Pestañas",
+        Híbridas: "Pestañas",
+        Volumen: "Pestañas",
+        Rímel: "Pestañas",
+        "Efecto mojado": "Pestañas",
+        "Volumen americano": "Pestañas",
+        "Volumen hawaiano": "Pestañas",
+        "Volumen ruso": "Pestañas",
+        "Volumen egipcio": "Pestañas",
+        "Efecto coreano": "Pestañas",
+        Wispy: "Pestañas",
+        Choppy: "Pestañas",
+        "Foxy eye": "Pestañas",
+        "Degradados de color": "Pestañas",
+        Lifting: "Pestañas",
+        Microblading: "Cejas",
+        "Retiro microblading": "Cejas",
+        Shading: "Cejas",
+        "Laminado HD": "Cejas",
+        Henna: "Cejas",
+        "Henna 4K": "Cejas",
+        Diseño: "Cejas",
+        Culturales: "Uñas",
+        Rubber: "Uñas",
+        "Gelish Manos": "Uñas",
+        "Gelish Pies": "Pies",
+        Tip: "Uñas",
+        "Soft gel": "Uñas",
+        "Manicura rusa": "Uñas",
+        "Manicura spa": "Uñas",
+        Acripie: "Pies",
+        "Pedicura spa": "Pies",
+        Facial: "Labios y Rostro",
+        "Relleno labios": "Labios y Rostro",
+        Micropigmentación: "Labios y Rostro",
+        "BB Glow": "Labios y Rostro",
+        "BB Lips": "Labios y Rostro",
+        Cachetes: "Enzimas",
+        Papada: "Enzimas",
+        Brazo: "Enzimas",
+        Abdomen: "Enzimas",
+        Cintura: "Enzimas",
+      };
+
+      const serviceOptionsEl = document.getElementById("serviceOptions");
+      if (serviceOptionsEl) {
+        Object.keys(categoryMap).forEach((service) => {
+          const option = document.createElement("option");
+          option.value = service;
+          serviceOptionsEl.appendChild(option);
+        });
+      }
+
+      const toggleBtn = document.getElementById("toggleFormBtn");
+      const formEl = document.getElementById("bookingForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+
+      toggleBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        formEl.classList.remove("d-none");
+        toggleBtn.classList.add("d-none"); // Hide +
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        form.reset();
+
+        // 🔁 Rebuild Servicio field to fix missing placeholder
+        const wrapper = document.getElementById("servicesWrapper");
+        wrapper.innerHTML = "";
+
+        const firstInput = document.createElement("input");
+        firstInput.type = "text";
+        firstInput.name = "service";
+        firstInput.placeholder = "Servicio";
+        firstInput.className = "form-control mb-2";
+        firstInput.setAttribute("list", "serviceOptions");
+        firstInput.required = true;
+        firstInput.oninput = () => maybeAddAnotherService(firstInput);
+        wrapper.appendChild(firstInput);
+
+        // ✅ Reset visual placeholder for Fecha
+        const dateInput = document.getElementById("date");
+        const fechaLabel = document.getElementById("fechaLabel");
+        if (dateInput && fechaLabel) {
+          dateInput.style.color = "transparent";
+          fechaLabel.style.display = "block";
+        }
+
+        // 👇 Hide form / show green +
+        formEl.classList.add("d-none");
+        toggleBtn.classList.remove("d-none");
+
+        // 🆕 Reset submit button and title
+        submitBtn.textContent = "Agendar";
+        document.getElementById("formTitle").textContent = "📝 Nueva Cita";
+        delete submitBtn.dataset.mode;
+        delete submitBtn.dataset.editId;
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("clientName").value.trim();
+        const phone = document.getElementById("clientPhone").value.trim();
+        const staff_id = document.getElementById("staff_id").value;
+        const date = document.getElementById("date").value;
+        const time = document.getElementById("time").value;
+        const durationInput = document.getElementById("duration").value.trim();
+        const priceInput = document.getElementById("price").value.trim();
+        const depositInput = document.getElementById("deposit").value.trim();
+
+        const services = Array.from(
+          document.querySelectorAll('input[name="service"]')
+        )
+          .map((s) => s.value.trim())
+          .filter(Boolean)
+          .join(", ");
+
+        const price = parseInt(priceInput, 10);
+        const duration = parseInt(durationInput, 10);
+        const deposit = parseInt(depositInput, 10) || 0;
+
+        if (
+          !name ||
+          !phone ||
+          !services ||
+          !date ||
+          !time ||
+          isNaN(price) ||
+          isNaN(duration)
+        ) {
+          alert("Todos los campos son obligatorios");
+          return;
+        }
+
+        const booking = {
+          clientName: name,
+          clientPhone: phone,
+          staff_id,
+          date,
+          time,
+          duration,
+          price,
+          deposit,
+          service: services,
+        };
+
+        // ✅ Check if we're in edit mode
+        if (submitBtn.dataset.mode === "edit") {
+          const bookingId = submitBtn.dataset.editId;
+          const docRef = doc(db, "bookings", bookingId);
+
+          // 🧠 Fetch the current version before updating
+          const originalDoc = await getDoc(docRef);
+          const originalData = originalDoc.exists() ? originalDoc.data() : {};
+
+          // ✍️ Update booking in Firestore
+          await updateDoc(docRef, {
+            ...booking,
+            updated_at: serverTimestamp(),
+          });
+
+          // 🗂 Save a copy into booking_history
+          await addDoc(collection(db, "booking_history"), {
+            original_id: bookingId,
+            previous_data: originalData,
+            updated_data: booking,
+            modified_at: serverTimestamp(),
+          });
+
+          alert("✅ Cita actualizada con éxito");
+        } else {
+          // 🆕 Create new booking
+          booking.status = "pending";
+          booking.created_at = serverTimestamp();
+
+          await addDoc(collection(db, "bookings"), booking);
+          alert("✅ Cita registrada con éxito");
+        }
+
+        // 🧼 Cleanup after save
+        form.reset();
+
+        // 🛠️ Rebuild Servicio field to fix missing placeholder
+        const wrapper = document.getElementById("servicesWrapper");
+        wrapper.innerHTML = "";
+        const firstInput = document.createElement("input");
+        firstInput.type = "text";
+        firstInput.name = "service";
+        firstInput.placeholder = "Servicio";
+        firstInput.className = "form-control mb-2";
+        firstInput.setAttribute("list", "serviceOptions");
+        firstInput.required = true;
+        firstInput.oninput = () => maybeAddAnotherService(firstInput);
+        wrapper.appendChild(firstInput);
+
+        // 🗓️ Reset floating Fecha placeholder
+        const dateInput = document.getElementById("date");
+        const fechaLabel = document.getElementById("fechaLabel");
+        if (dateInput && fechaLabel) {
+          dateInput.style.color = "transparent";
+          fechaLabel.style.display = "block";
+        }
+
+        formEl.classList.add("d-none");
+        toggleBtn.textContent = "+";
+        toggleBtn.classList.remove("d-none");
+        submitBtn.textContent = "Agendar";
+        document.getElementById("formTitle").textContent = "📝 Nueva Cita";
+        delete submitBtn.dataset.mode;
+        delete submitBtn.dataset.editId;
+
+        window.loadStats?.();
+      });
+
+      async function saveBookingHistoryBeforeEdit(bookingId) {
+        const bookingRef = doc(db, "bookings", bookingId);
+        const bookingSnap = await getDoc(bookingRef);
+
+        if (bookingSnap.exists()) {
+          const oldData = bookingSnap.data();
+          const historyRef = collection(db, "booking_history");
+
+          await addDoc(historyRef, {
+            originalBookingId: bookingId,
+            ...oldData,
+            savedAt: serverTimestamp(),
+            type: "edit",
+          });
+
+          console.log("📦 Booking history saved for", bookingId);
+        } else {
+          console.warn("❌ Booking not found to save history");
+        }
+      }
+
+      window.editBooking = function editBooking(id) {
+        const docRef = doc(db, "bookings", id);
+        getDoc(docRef).then((snapshot) => {
+          const data = snapshot.data();
+          if (!data) return;
+
+          // 🔁 Open and prefill the booking form
+          document.getElementById("toggleFormBtn").classList.add("d-none");
+          const form = document.getElementById("bookingForm");
+          form.classList.remove("d-none");
+
+          document.getElementById("clientName").value = data.clientName || "";
+          document.getElementById("clientPhone").value = data.clientPhone || "";
+          document.getElementById("staff_id").value = data.staff_id || "";
+          document.getElementById("time").value =
+            data.time || data.start_time || "";
+          document.getElementById("price").value = data.price || "";
+          document.getElementById("date").value = data.date || "";
+          document.getElementById("duration").value = data.duration || "";
+          document.getElementById("deposit").value = data.deposit || "";
+
+          const dateInput = document.getElementById("date");
+          dateInput.value = data.date || "";
+          if (data.date) {
+            dateInput.style.color = "#212529"; // 👈 make text visible
+            const fechaLabel = document.getElementById("fechaLabel");
+            if (fechaLabel) fechaLabel.style.display = "none"; // 👈 hide fake label
+          }
+
+          // 🔁 Clear & add services
+          const wrapper = document.getElementById("servicesWrapper");
+          wrapper.innerHTML = ""; // Clear
+          (data.service || "").split(",").forEach((s) => {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = "service";
+            input.value = s.trim();
+            input.className = "form-control mb-2";
+            input.setAttribute("list", "serviceOptions");
+            wrapper.appendChild(input);
+          });
+          maybeAddAnotherService(wrapper.lastChild);
+
+          document.getElementById("formTitle").textContent = "🛠️ Editando Cita";
+
+          // 🔁 Swap button text
+          const submitBtn = document.getElementById("submitBtn");
+          submitBtn.textContent = "Guardar";
+          submitBtn.dataset.mode = "edit";
+          submitBtn.dataset.editId = id;
+
+          // Cancel stays the same
+        });
+      };
+
+      async function renderAgendaCalendar() {
+        const container = document.querySelector("#calendar");
+        if (!container) return;
+
+        // Remove previous .calendar-strip rows
+        container
+          .querySelectorAll(".calendar-strip")
+          .forEach((el) => el.remove());
+
+        const staffList = ["Hatzi", "Lucy", "Vale"];
+        const staffClasses = {
+          Hatzi: "lleno",
+          Lucy: "lleno",
+          Vale: "lleno",
+        };
+        const times = ["09:00", "11:00", "13:00", "15:00", "18:00"];
+        const today = new Date();
+
+        const bookingsSnapshot = await getDocs(collection(db, "bookings"));
+        console.log(
+          "📥 Raw bookings snapshot:",
+          bookingsSnapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        );
+        const bookings = bookingsSnapshot.docs
+          .map((doc) => doc.data())
+          .filter((b) => b.status === "reserved");
+
+        for (const staff of staffList) {
+          const strip = document.createElement("div");
+          strip.className = "calendar-strip";
+
+          let date = new Date(); // start from today
+          let added = 0;
+
+          while (added < 14) {
+            const dayOfWeek = date.getDay();
+
+            // 🚫 Skip Sundays only
+            if (dayOfWeek !== 0) {
+              const isoDate =
+                date.getFullYear() +
+                "-" +
+                String(date.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(date.getDate()).padStart(2, "0");
+              const weekday = date.toLocaleDateString("es-MX", {
+                weekday: "long",
+              });
+              const day = date.getDate().toString().padStart(2, "0");
+              const month = date.toLocaleDateString("es-MX", { month: "long" });
+
+              const dateLabel = `<strong>${capitalize(
+                weekday
+              )}</strong> ${day} de ${capitalize(month)}`;
+
+              function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+              }
+
+              const dayCard = document.createElement("div");
+              dayCard.style =
+                "background-color: #FFE89E; border-width:0.7px; border-style:solid; border-color:#000;";
+              dayCard.className = "calendar-day";
+              dayCard.innerHTML = `
+                      <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div style="font-family: 'Brush Script MT', cursive; font-size: 3.5rem; padding-left: 0.5rem; padding-right: 0.5rem; font-weight: 500;">
+                            ${staff}
+                          </div>
+                          <div class="text-capitalize" style="font-size: 1.3rem; margin-top: 17px;">
+                            ${dateLabel}
+                          </div>
+                        </div>
+                      </div>
+                    `;
+
+              const staffRow = document.createElement("div");
+              staffRow.className = "staff-row";
+
+              for (const time of times) {
+                const match = bookings.find(
+                  (b) =>
+                    (b.time === time || b.start_time === time) &&
+                    b.date === isoDate &&
+                    (b.staff_id === staff || b.staff === staff)
+                );
+
+                if (match) {
+                  staffRow.innerHTML += `
+                    <div class="appt-card">
+                      <span class="appt-time">${time}</span>
+                      <span class="text-truncate">${
+                        match.service || "Lleno"
+                      }</span>
+                      <span class="badge-staff ${
+                        staffClasses[staff]
+                      }">Lleno</span>
+                    </div>
+                  `;
+                } else {
+                  staffRow.innerHTML += `
+                    <div class="appt-card">
+                      <span class="appt-time">${time}</span>
+                      <span style="font-size: 1.7rem;">🤷‍♀️ 🤷‍♀️ 🤷‍♀️</span>
+                      <span class="badge-staff libre">Libre</span>
+                    </div>
+                  `;
+                }
+              }
+
+              dayCard.appendChild(staffRow);
+              strip.appendChild(dayCard);
+              added++;
+            }
+
+            date.setDate(date.getDate() + 1); // move to next day
+          }
+
+          container.prepend(strip);
+        }
+      }
+
+      async function loadStats() {
+        console.log("🚀 loadStats() triggered");
+
+        const citasPorDia = {
+          Lunes: 0,
+          Martes: 0,
+          Miércoles: 0,
+          Jueves: 0,
+          Viernes: 0,
+          Sábado: 0,
+        };
+
+        const serviceFilteredCounts = {};
+        const categoryFilteredCounts = {};
+        const serviceCounts = {};
+        const staffCounts = {};
+        const categoryCounts = {};
+        const phoneTracker = {};
+        const timeCounts = {};
+        let newClients = 0;
+        let returningClients = 0;
+        let totalRevenue = 0;
+        let inRangeBookingCount = 0;
+        let totalSlots = 50;
+
+        const startDateInput = document.getElementById("startDate");
+        const endDateInput = document.getElementById("endDate");
+        const filterStart = startDateInput?.value
+          ? new Date(startDateInput.value)
+          : null;
+        const filterEnd = endDateInput?.value
+          ? new Date(endDateInput.value)
+          : null;
+
+        if (filterStart && filterEnd) {
+          let workingDays = 0;
+          for (
+            let d = new Date(filterStart);
+            d <= filterEnd;
+            d.setDate(d.getDate() + 1)
+          ) {
+            const day = d.getDay();
+            if (day >= 1 && day <= 5) workingDays++;
+          }
+          totalSlots = workingDays * 5;
+        }
+
+        const bookingsSnapshot = await getDocs(collection(db, "bookings"));
+        console.log("📦 Total bookings fetched:", bookingsSnapshot.size);
+        if (bookingsSnapshot.empty) {
+          console.warn("⚠️ No data found in bookings");
+          return;
+        }
+
+        bookingsSnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data.status !== "completed") return;
+          const id = docSnap.id;
+          let inRange = true;
+
+          if (filterStart && filterEnd && data.date) {
+            const dateObj = new Date(data.date);
+            if (dateObj < filterStart || dateObj > filterEnd) {
+              inRange = false;
+            }
+          }
+
+          if (inRange) {
+            inRangeBookingCount++;
+            totalRevenue += Number(data.price) || 0;
+
+            // Count by service
+            const serviceArr = (data.service || "")
+              .split(",")
+              .map((s) => s.trim());
+            serviceArr.forEach((service) => {
+              if (service) {
+                serviceCounts[service] = (serviceCounts[service] || 0) + 1;
+                const cat = categoryMap[service] || "Otros";
+                categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+                if (!categoryFilteredCounts[cat])
+                  categoryFilteredCounts[cat] = 0;
+                categoryFilteredCounts[cat]++;
+                if (
+                  currentCategoryView &&
+                  cat.toLowerCase() === currentCategoryView.toLowerCase()
+                ) {
+                  serviceFilteredCounts[service] =
+                    (serviceFilteredCounts[service] || 0) + 1;
+                }
+              }
+            });
+
+            // Count by day of week
+            if (data.date) {
+              const dt = new Date(data.date);
+              const weekDays = [
+                "Domingo",
+                "Lunes",
+                "Martes",
+                "Miércoles",
+                "Jueves",
+                "Viernes",
+                "Sábado",
+              ];
+              const dayName = weekDays[dt.getDay()];
+              if (citasPorDia[dayName] !== undefined) {
+                citasPorDia[dayName]++;
+              }
+            }
+
+            // Count by time
+            if (data.time) {
+              timeCounts[data.time] = (timeCounts[data.time] || 0) + 1;
+            }
+
+            // Count new/recurrent clients
+            if (data.clientPhone) {
+              if (!phoneTracker[data.clientPhone]) {
+                phoneTracker[data.clientPhone] = true;
+                newClients++;
+              } else {
+                returningClients++;
+              }
+            }
+
+            // Staff (if you have a staff property)
+            if (data.staff_id) {
+              staffCounts[data.staff_id] =
+                (staffCounts[data.staff_id] || 0) + 1;
+            }
+          }
+        });
+
+        // 🔝 Sort top 5 services regardless of category
+        const sortedServices = Object.entries(serviceCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+
+        const top5ServiceLabels = sortedServices.map(
+          ([name]) => name.charAt(0).toUpperCase() + name.slice(1)
+        );
+        const top5ServiceValues = sortedServices.map(([, count]) => count);
+
+        // Fill rate calculation
+        const fillRate =
+          totalSlots > 0
+            ? Math.round((inRangeBookingCount / totalSlots) * 100)
+            : 0;
+
+        const fillRateEl = document.getElementById("fillRate");
+        if (fillRateEl) {
+          fillRateEl.textContent = `${fillRate}%`;
+        }
+
+        // Total revenue display
+        const totalRevenueEl = document.getElementById("totalRevenue");
+        if (totalRevenueEl) {
+          totalRevenueEl.textContent = `$${totalRevenue.toLocaleString(
+            undefined,
+            {
+              minimumFractionDigits: 2,
+            }
+          )}`;
+        }
+
+        // Sort time slots
+        const sortedTimeCounts = Object.fromEntries(
+          Object.entries(timeCounts).sort(([a], [b]) => {
+            return parseInt(a.replace(":", "")) - parseInt(b.replace(":", ""));
+          })
+        );
+
+        // Chart configurations
+        const charts = [
+          {
+            id: "topServicesChart",
+            type: "pie",
+            label: null,
+            data: currentCategoryView
+              ? serviceFilteredCounts
+              : categoryFilteredCounts,
+            bg: [
+              "#6F7C4E",
+              "#D9A441",
+              "#1C1C1C",
+              "#8AB661",
+              "#B79861",
+              "#F4BFBF",
+              "#F6E9D7",
+              "#AEBDCA",
+              "#6E6658",
+              "#A98467",
+            ],
+          },
+          {
+            id: "top5ServicesChart",
+            type: "bar",
+            label: "Top 5 Servicios Generales",
+            data: Object.fromEntries(sortedServices),
+            bg: "#8AB661",
+          },
+          {
+            id: "popularTimesChart",
+            type: "bar",
+            label: null,
+            data: sortedTimeCounts,
+            bg: "#1C1C1C",
+          },
+          {
+            id: "clientTypeChart",
+            type: "doughnut",
+            indexAxis: "y",
+            label: null,
+            data: { Nuevos: newClients, Recurrentes: returningClients },
+            bg: ["#D9A441", "#6F7C4E"],
+          },
+          {
+            id: "appointmentsPerDayChart",
+            type: "line",
+            label: null,
+            data: citasPorDia,
+            tension: 0.4,
+            fill: true,
+            borderColor: "#D9A441",
+            backgroundColor: "rgba(217, 164, 65, 0.15)",
+            pointBackgroundColor: "#1C1C1C",
+            pointBorderColor: "#1C1C1C",
+            borderWidth: 5,
+            pointRadius: 2,
+          },
+          {
+            id: "staffPerformanceChart",
+            type: "bar",
+            label: null,
+            data: staffCounts,
+            bg: "#6F7C4E",
+          },
+        ];
+        console.log("🧠 categoryFilteredCounts", categoryFilteredCounts);
+        console.log("🧠 serviceFilteredCounts", serviceFilteredCounts);
+        console.log("🧠 currentCategoryView", currentCategoryView);
+        console.log(
+          "🧠 chart will use",
+          currentCategoryView ? serviceFilteredCounts : categoryFilteredCounts
+        );
+
+        // Pending requests
+        const pendingContainer = document.getElementById("pendingRequests");
+        pendingContainer.innerHTML = "";
+        bookingsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          if (data.status === "pending") {
+            const card = document.createElement("div");
+            card.style = "background-color: #FFF2C1;";
+            card.className = "card p-3 mb-3 shadow-sm";
+            const dateToday = new Date().toISOString().split("T")[0];
+
+            const [yyyy, mm, dd] = (data.date || "").split("-");
+            const formattedDate =
+              dd && mm && yyyy ? `${dd}/${mm}/${yyyy.slice(-2)}` : "??/??/??";
+            const time = data.start_time || data.time || "??:??";
+            const price = `$${data.price || 0}`;
+            const service = data.service || "???";
+            const serviceArray = service.split(",").map((s) => s.trim());
+            const scrollService = serviceArray.length >= 3;
+            const serviceSpan = scrollService
+              ? `<span class="scroll-service"><i class="fa-solid fa-star fa-xs me-2"></i>${service}</span>`
+              : `<span><i class="fa-solid fa-star fa-xs me-2"></i>${service}</span>`;
+
+            card.innerHTML = `
+              <div class="d-flex flex-column gap-2">
+                <div class="badge d-flex justify-content-between px-2 py-2">
+                  ${serviceSpan}
+                  <span><i class="fa-solid fa-calendar-day fa-xs me-2"></i>${formattedDate}</span>
+                </div>
+                <div class="badge d-flex justify-content-between px-2 py-2">
+                  <span><i class="fa-solid fa-user fa-xs me-2"></i>${data.staff_id}</span>
+                  <span><i class="fa-solid fa-crown fa-xs me-2"></i>${data.clientName}</span>
+                </div>
+                <div class="badge d-flex justify-content-between px-2 py-2">
+                  <span><i class="fa-solid fa-clock fa-xs me-2"></i>${time}</span>
+                  <span><i class="fa-solid fa-phone fa-xs me-2"></i>${data.clientPhone}</span>
+                </div>
+                <div class="d-flex justify-content-center gap-2 pt-2">
+                  <button class="btn btn-sm btn-success" style="min-width: 120px;" onclick="markAsReserved('${id}')">Anticipo</button>
+                  <button class="btn btn-sm btn-danger" style="min-width: 120px;" onclick="editBooking('${id}')">Editar</button>
+                </div>
+              </div>
+            `;
+
+            pendingContainer.appendChild(card);
+          }
+        });
+
+        // Reserved appointments
+        const reservedContainer = document.getElementById(
+          "reservedAppointments"
+        );
+        // Reset the container
+        reservedContainer.innerHTML = "";
+
+        bookingsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+
+          if (data.status === "reserved") {
+            const [yyyy, mm, dd] = (data.date || "").split("-");
+            const formattedDate =
+              dd && mm && yyyy ? `${dd}/${mm}/${yyyy.slice(-2)}` : "??/??/??";
+            const time = data.start_time || data.time || "??:??";
+            const price = `$${data.price || 0}`;
+            const service = data.service || "???";
+            const phone = data.clientPhone || "???";
+            const staff = data.staff_id || "Staff?";
+
+            const card = document.createElement("div");
+            card.className = "card p-3 shadow-sm mb-3"; // Add spacing between cards
+            card.style.backgroundColor = "#DCE7C5";
+
+            card.innerHTML = `
+              <div class="d-flex flex-column gap-2">
+                <div class="badge d-flex justify-content-between px-2 py-2">
+                  <span><i class="fa-solid fa-star fa-xs me-2"></i>${service}</span>
+                  <span><i class="fa-solid fa-calendar-day fa-xs me-2"></i>${formattedDate}</span>
+                </div>
+                <div class="badge d-flex justify-content-between px-2 py-2">
+                  <span><i class="fa-solid fa-user fa-xs me-2"></i>${data.staff_id}</span>
+                  <span><i class="fa-solid fa-crown fa-xs me-2"></i>${data.clientName}</span>
+                </div>
+                <div class="badge d-flex justify-content-between px-2 py-2">
+                  <span><i class="fa-solid fa-clock fa-xs me-2"></i>${time}</span>
+                  <span><i class="fa-solid fa-phone fa-xs me-2"></i>${data.clientPhone}</span>
+                </div>
+                <div class="d-flex justify-content-center gap-2 pt-2">
+                  <button class="btn btn-sm btn-success" style="min-width: 120px;" onclick="markAsCompleted('${id}')">Check-in</button>
+                  <button class="btn btn-sm btn-danger" style="min-width: 120px;" onclick="editBooking('${id}')">Editar</button>
+                </div>
+              </div>
+            `;
+
+            reservedContainer.appendChild(card); // Append directly
+          }
+        });
+
+        // Render charts
+        charts.forEach((chart) => {
+          const el = document.getElementById(chart.id);
+          if (!el) {
+            console.error(`🚨 Missing canvas: ${chart.id}`);
+            return;
+          }
+
+          if (chartInstances[chart.id]) {
+            chartInstances[chart.id].destroy();
+          }
+
+          const dataObject =
+            chart.getData && typeof chart.getData === "function"
+              ? chart.getData()
+              : chart.data || {};
+
+          const config = {
+            type: chart.type,
+            data: {
+              labels: Object.keys(chart.data).map(
+                (label) => label.charAt(0).toUpperCase() + label.slice(1)
+              ),
+              datasets: [
+                {
+                  label:
+                    chart.id === "top5ServicesChart" ? "" : chart.label ?? "",
+                  data: Object.values(chart.data),
+                  backgroundColor:
+                    chart.type === "line"
+                      ? chart.backgroundColor || "rgba(0,0,0,0.1)"
+                      : chart.bg || undefined,
+                  borderColor: chart.borderColor || chart.bg || undefined,
+                  borderWidth: chart.borderWidth || 1,
+                  pointBackgroundColor: chart.pointBackgroundColor || undefined,
+                  pointBorderColor: chart.pointBorderColor || undefined,
+                  pointRadius: chart.pointRadius || undefined,
+                  fill: chart.type === "line" ? false : undefined,
+                },
+              ],
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display:
+                    chart.id !== "top5ServicesChart" &&
+                    chart.id !== "appointmentsPerDayChart" &&
+                    chart.id !== "staffPerformanceChart" &&
+                    chart.id !== "popularTimesChart",
+                },
+              },
+              scales:
+                chart.type !== "pie" && chart.type !== "doughnut"
+                  ? {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          stepSize: 1,
+                          callback: function (value) {
+                            return Number.isInteger(value) ? value : null;
+                          },
+                        },
+                      },
+                    }
+                  : undefined,
+            },
+          };
+
+          const newChart = new Chart(el, config);
+          chartInstances[chart.id] = newChart;
+
+          // Pie chart click logic for drill-down
+          if (chart.id === "topServicesChart") {
+            el.onclick = (evt) => {
+              if (currentCategoryView !== null) return;
+              const point = newChart.getElementsAtEventForMode(
+                evt,
+                "nearest",
+                { intersect: true },
+                false
+              );
+              if (point.length === 0) return;
+              const label = newChart.data.labels[point[0].index];
+              currentCategoryView = label.toLowerCase();
+              const backBtn = document.getElementById("backToCategories");
+              if (backBtn) backBtn.classList.remove("d-none");
+              loadStats();
+            };
+
+            const title = document.getElementById("topServicesTitle");
+            if (title) {
+              title.onclick = () => {
+                resetToCategories();
+              };
+            }
+          }
+        });
+      }
+
+      window.loadStats = loadStats;
+
+      window.markAsReserved = async (id) => {
+        const docRef = doc(db, "bookings", id);
+        await updateDoc(docRef, { status: "reserved" });
+        loadStats();
+        await renderAgendaCalendar();
+      };
+
+      window.markAsCompleted = async (id) => {
+        const docRef = doc(db, "bookings", id);
+        await updateDoc(docRef, { status: "completed" });
+        loadStats();
+      };
+
+      window.resetToCategories = function resetToCategories() {
+        currentCategoryView = null;
+        const backBtn = document.getElementById("backToCategories");
+        if (backBtn) backBtn.classList.add("d-none");
+        loadStats();
+      };
+
+      window.setQuickRange = function setQuickRange(option) {
+        const today = new Date();
+        let start, end;
+
+        switch (option) {
+          case "today":
+            start = end = today;
+            break;
+          case "thisWeek":
+            const day = today.getDay() || 7;
+            start = new Date(today);
+            start.setDate(today.getDate() - day + 1);
+            end = today;
+            break;
+          case "lastWeek":
+            const prev = new Date(today);
+            prev.setDate(today.getDate() - 7);
+            const startOfLastWeek = new Date(prev);
+            startOfLastWeek.setDate(prev.getDate() - (prev.getDay() || 7) + 1);
+            const endOfLastWeek = new Date(startOfLastWeek);
+            endOfLastWeek.setDate(startOfLastWeek.getDate() + 6);
+            start = startOfLastWeek;
+            end = endOfLastWeek;
+            break;
+          case "thisMonth":
+            start = new Date(today.getFullYear(), today.getMonth(), 1);
+            end = today;
+            break;
+          case "lastMonth":
+            start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            end = new Date(today.getFullYear(), today.getMonth(), 0);
+            break;
+          default:
+            return;
+        }
+
+        const startStr = start.toISOString().split("T")[0];
+        const endStr = end.toISOString().split("T")[0];
+
+        document.getElementById("startDate").value = startStr;
+        document.getElementById("endDate").value = endStr;
+        loadStats();
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const startInput = document.getElementById("startDate");
+        const endInput = document.getElementById("endDate");
+        renderAgendaCalendar();
+
+        function handleDateChange() {
+          const start = document.getElementById("startDate")?.value;
+          const end = document.getElementById("endDate")?.value;
+          if (start && end && new Date(start) <= new Date(end)) {
+            loadStats();
+          }
+        }
+
+        if (startInput && endInput) {
+          startInput.addEventListener("change", handleDateChange);
+          endInput.addEventListener("change", handleDateChange);
+        }
+
+        const statsTab = document.querySelector('[data-bs-target="#stats"]');
+        const statsTabContent = document.querySelector("#stats");
+
+        async function updateAvailableTimes() {
+          const selectedDate = document.getElementById("date").value;
+          const selectedStaff = document.getElementById("staff_id").value;
+          if (!selectedDate || !selectedStaff) return;
+
+          const snapshot = await getDocs(collection(db, "bookings"));
+          const reserved = snapshot.docs
+            .map((doc) => doc.data())
+            .filter(
+              (b) =>
+                b.date === selectedDate &&
+                b.staff?.toLowerCase() === selectedStaff.toLowerCase() &&
+                ["pending", "reserved", "completed"].includes(b.status)
+            )
+            .map((b) => b.time || b.start_time);
+
+          const options = timeSelect.querySelectorAll("option");
+          options.forEach((option) => {
+            if (!option.value) return;
+            option.disabled = reserved.includes(option.value);
+          });
+        }
+
+        document
+          .getElementById("date")
+          .addEventListener("change", updateAvailableTimes);
+        document
+          .getElementById("staff_id")
+          .addEventListener("change", updateAvailableTimes);
+
+        function setDefaultThisWeekAndLoad() {
+          const today = new Date();
+          const day = today.getDay() || 7;
+          const start = new Date(today);
+          start.setDate(today.getDate() - day + 1);
+          const startStr = start.toISOString().split("T")[0];
+          const endStr = today.toISOString().split("T")[0];
+          document.getElementById("startDate").value = startStr;
+          document.getElementById("endDate").value = endStr;
+          loadStats();
+        }
+
+        statsTab?.addEventListener("click", () => {
+          setTimeout(() => {
+            const start = document.getElementById("startDate")?.value;
+            const end = document.getElementById("endDate")?.value;
+            if (!start || !end) {
+              setDefaultThisWeekAndLoad();
+            } else {
+              loadStats();
+            }
+          }, 200);
+        });
+
+        if (statsTabContent?.classList.contains("show")) {
+          setTimeout(setDefaultThisWeekAndLoad, 300);
+        }
+        loadStats();
+      });
+    </script>
+    <script>
+      const dateInput = document.getElementById("date");
+      const fechaLabel = document.getElementById("fechaLabel");
+
+      dateInput.addEventListener("input", () => {
+        fechaLabel.style.display = dateInput.value ? "none" : "block";
+      });
+
+      function maybeAddAnotherService(input) {
+        const wrapper = document.getElementById("servicesWrapper");
+        const inputs = wrapper.querySelectorAll('input[name="service"]');
+        const lastInput = inputs[inputs.length - 1];
+
+        if (
+          input === lastInput &&
+          input.value.trim() !== "" &&
+          inputs.length < 4
+        ) {
+          const newInput = document.createElement("input");
+          newInput.type = "text";
+          newInput.name = "service";
+          newInput.placeholder = "Servicio adicional?";
+          newInput.className = "form-control mb-2";
+
+          // 🔥 Add this:
+          newInput.setAttribute("list", "serviceOptions");
+
+          newInput.oninput = () => maybeAddAnotherService(newInput);
+          wrapper.appendChild(newInput);
+        }
+      }
+
+      const timeSelect = document.getElementById("time");
+
+      async function logBookingHistory(originalData, bookingId) {
+        try {
+          await addDoc(collection(db, "booking_history"), {
+            booking_id: bookingId,
+            edited_at: serverTimestamp(),
+            original_data: originalData,
+          });
+          console.log("📚 Edit logged to booking_history");
+        } catch (err) {
+          console.error("❌ Error logging edit history:", err);
+        }
+      }
+    </script>
+  </body>
+</html>

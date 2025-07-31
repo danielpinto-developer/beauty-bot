@@ -1,0 +1,40 @@
+{"text": "Quiero una cita para masaje el lunes a las 3pm", "entities": [[28, 36, "FECHA"], [37, 46, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para microblading el s\u00e1bado a las 4:15", "entities": [[34, 43, "FECHA"], [44, 54, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para limpieza facial el lunes a las 8:15am", "entities": [[37, 45, "FECHA"], [46, 58, "HORA"], [21, 36, "SERVICIO"]]}
+{"text": "Quiero una cita para limpieza facial el viernes a las 12:45", "entities": [[37, 47, "FECHA"], [48, 59, "HORA"], [21, 36, "SERVICIO"]]}
+{"text": "Quiero una cita para hidraterapia el domingo a las 3pm", "entities": [[34, 44, "FECHA"], [45, 54, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para facial hoy a las 6 de la tarde", "entities": [[28, 31, "FECHA"], [32, 51, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para hidraterapia el jueves a las 11am", "entities": [[34, 43, "FECHA"], [44, 54, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para cejas el domingo a las 12:45", "entities": [[27, 37, "FECHA"], [38, 49, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para depilaci\u00f3n hoy a las 11am", "entities": [[32, 35, "FECHA"], [36, 46, "HORA"], [21, 31, "SERVICIO"]]}
+{"text": "Quiero una cita para peinado el s\u00e1bado a las 9", "entities": [[29, 38, "FECHA"], [39, 46, "HORA"], [21, 28, "SERVICIO"]]}
+{"text": "Quiero una cita para enzimas el 10 de agosto a las 9", "entities": [[29, 44, "FECHA"], [45, 52, "HORA"], [21, 28, "SERVICIO"]]}
+{"text": "Quiero una cita para pesta\u00f1as ma\u00f1ana a las 4:15", "entities": [[30, 36, "FECHA"], [37, 47, "HORA"], [21, 29, "SERVICIO"]]}
+{"text": "Quiero una cita para depilaci\u00f3n el s\u00e1bado a las 11am", "entities": [[32, 41, "FECHA"], [42, 52, "HORA"], [21, 31, "SERVICIO"]]}
+{"text": "Quiero una cita para tinte el 10 de agosto a las 11am", "entities": [[27, 42, "FECHA"], [43, 53, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para masaje el viernes a las 4:15", "entities": [[28, 38, "FECHA"], [39, 49, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para facial el s\u00e1bado a las 3pm", "entities": [[28, 37, "FECHA"], [38, 47, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para depilaci\u00f3n el jueves a las 2", "entities": [[32, 41, "FECHA"], [42, 49, "HORA"], [21, 31, "SERVICIO"]]}
+{"text": "Quiero una cita para microblading el s\u00e1bado a las 11am", "entities": [[34, 43, "FECHA"], [44, 54, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para hidraterapia el s\u00e1bado a las 5 en punto", "entities": [[34, 43, "FECHA"], [44, 60, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para tinte ma\u00f1ana a las 8:15am", "entities": [[27, 33, "FECHA"], [34, 46, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para peinado el martes a las 6 de la tarde", "entities": [[29, 38, "FECHA"], [39, 58, "HORA"], [21, 28, "SERVICIO"]]}
+{"text": "Quiero una cita para tinte el viernes a las 11am", "entities": [[27, 37, "FECHA"], [38, 48, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para peinado el mi\u00e9rcoles a las 11am", "entities": [[29, 41, "FECHA"], [42, 52, "HORA"], [21, 28, "SERVICIO"]]}
+{"text": "Quiero una cita para enzimas el domingo a las 5 en punto", "entities": [[29, 39, "FECHA"], [40, 56, "HORA"], [21, 28, "SERVICIO"]]}
+{"text": "Quiero una cita para hidraterapia hoy a las 4:15", "entities": [[34, 37, "FECHA"], [38, 48, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para masaje el domingo a las 8:15am", "entities": [[28, 38, "FECHA"], [39, 51, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para facial el s\u00e1bado a las 8:15am", "entities": [[28, 37, "FECHA"], [38, 50, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para limpieza facial el viernes a las 10:30", "entities": [[37, 47, "FECHA"], [48, 59, "HORA"], [21, 36, "SERVICIO"]]}
+{"text": "Quiero una cita para corte el s\u00e1bado a las 10:30", "entities": [[27, 36, "FECHA"], [37, 48, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para depilaci\u00f3n el lunes a las 11am", "entities": [[32, 40, "FECHA"], [41, 51, "HORA"], [21, 31, "SERVICIO"]]}
+{"text": "Quiero una cita para depilaci\u00f3n ma\u00f1ana a las 6 de la tarde", "entities": [[32, 38, "FECHA"], [39, 58, "HORA"], [21, 31, "SERVICIO"]]}
+{"text": "Quiero una cita para hidraterapia el jueves a las 3pm", "entities": [[34, 43, "FECHA"], [44, 53, "HORA"], [21, 33, "SERVICIO"]]}
+{"text": "Quiero una cita para facial hoy a las 4:15", "entities": [[28, 31, "FECHA"], [32, 42, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para limpieza facial el 15 de septiembre a las 6 de la tarde", "entities": [[37, 56, "FECHA"], [57, 76, "HORA"], [21, 36, "SERVICIO"]]}
+{"text": "Quiero una cita para depilaci\u00f3n el mi\u00e9rcoles a las 10:30", "entities": [[32, 44, "FECHA"], [45, 56, "HORA"], [21, 31, "SERVICIO"]]}
+{"text": "Quiero una cita para corte ma\u00f1ana a las 2", "entities": [[27, 33, "FECHA"], [34, 41, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para peinado el s\u00e1bado a las 3pm", "entities": [[29, 38, "FECHA"], [39, 48, "HORA"], [21, 28, "SERVICIO"]]}
+{"text": "Quiero una cita para corte hoy a las 5 en punto", "entities": [[27, 30, "FECHA"], [31, 47, "HORA"], [21, 26, "SERVICIO"]]}
+{"text": "Quiero una cita para masaje hoy a las 3pm", "entities": [[28, 31, "FECHA"], [32, 41, "HORA"], [21, 27, "SERVICIO"]]}
+{"text": "Quiero una cita para peinado el martes a las 3pm", "entities": [[29, 38, "FECHA"], [39, 48, "HORA"], [21, 28, "SERVICIO"]]}

@@ -1,0 +1,5 @@
+flask
+spacy
+torch
+transformers
+firebase-admin

@@ -1,0 +1,488 @@
+text,intent
+hola,saludo
+hola guapa,saludo
+buenos días,saludo
+buenas tardes,saludo
+buenas noches,saludo
+"hola, ¿cómo están?",saludo
+¿me puedes ayudar?,saludo
+¿hay alguien ahí?,saludo
+¿dónde están ubicados?,ubicacion
+¿cuál es su dirección?,ubicacion
+¿me puedes mandar la ubicación?,ubicacion
+¿en qué parte de zapopan están?,ubicacion
+¿cómo llego al salón?,ubicacion
+¿están cerca de walmart la cima?,ubicacion
+¿qué servicios ofrecen?,preguntar_servicios
+¿me puedes decir qué hacen ahí?,preguntar_servicios
+¿qué tipo de tratamientos tienen?,preguntar_servicios
+quiero saber qué servicios tienen,preguntar_servicios
+¿hacen uñas y pestañas?,preguntar_servicios
+¿cuánto cuesta el gelish?,preguntar_precios
+¿me puedes dar los precios?,preguntar_precios
+¿cuánto cobran por el diseño en uñas?,preguntar_precios
+¿cuál es el precio del alaciado japonés?,preguntar_precios
+¿qué precio tiene el dermapen?,preguntar_precios
+quiero saber cuánto cuesta cada servicio,preguntar_precios
+¿tienen paquetes de servicios?,preguntar_paquetes
+¿hay paquetes para depilación?,preguntar_paquetes
+me interesa un paquete de pestañas y cejas,preguntar_paquetes
+quiero armar un paquete personalizado,preguntar_paquetes
+¿cuáles son los paquetes que manejan?,preguntar_paquetes
+¿qué beneficios tiene el hydra lips?,preguntar_beneficios
+¿para qué sirve el dermapen?,preguntar_beneficios
+¿el botox capilar daña el cabello?,preguntar_beneficios
+¿cuáles son los beneficios del alaciado permanente?,preguntar_beneficios
+¿el tratamiento de enzimas para qué sirve?,preguntar_beneficios
+¿tienes catálogo de pestañas?,solicitar_catalogo
+mándame fotos de los estilos de pestañas,solicitar_catalogo
+¿puedo ver los diseños de uñas?,solicitar_catalogo
+¿me enseñas el catálogo de cejas?,solicitar_catalogo
+quiero ver el catálogo de colores para el cabello,solicitar_catalogo
+¿cuáles son las promociones de esta semana?,solicitar_promociones
+¿tienen promo en uñas?,solicitar_promociones
+¿hay descuentos hoy?,solicitar_promociones
+¿qué días hacen promociones?,solicitar_promociones
+¿hay promociones para nuevos clientes?,solicitar_promociones
+quiero agendar una cita,agendar_cita
+puedo agendar para mañana a las 4,agendar_cita
+quiero una cita para uñas el viernes,agendar_cita
+¿me puedes agendar para el martes?,agendar_cita
+agéndame para depilación a las 10 am,agendar_cita
+reservar cita para pestañas volumen,agendar_cita
+¿qué tratamiento me recomiendas para mi cabello maltratado?,recomendar_tratamiento
+¿si tengo el cabello procesado qué me hago?,recomendar_tratamiento
+¿me sirve la nanoplastia si tengo frizz?,recomendar_tratamiento
+¿cuál es el mejor tratamiento para alaciar sin dañar?,recomendar_tratamiento
+"¿qué es mejor para mí, botox o keratina?",recomendar_tratamiento
+¿puedo hacerme uñas y pestañas el mismo día?,preguntar_combinar_servicios
+¿puedo combinar enzimas con dermapen?,preguntar_combinar_servicios
+¿me puedo hacer cejas y labios el mismo día?,preguntar_combinar_servicios
+¿puedo agendar varios servicios juntos?,preguntar_combinar_servicios
+quiero hacer combo de depilación y facial,preguntar_combinar_servicios
+quiero cotizar un diseño personalizado de uñas,cotizar_diseno_uñas
+¿cuánto me cuesta un diseño con piedras?,cotizar_diseno_uñas
+¿puedo mandarte mi diseño y me cotizas?,cotizar_diseno_uñas
+"tengo un diseño de instagram, ¿cuánto sería?",cotizar_diseno_uñas
+¿necesito retiro para gelish?,preguntar_retiro
+¿pueden hacer retiro de acrílico?,preguntar_retiro
+¿si tengo uñas anteriores me las quitan?,preguntar_retiro
+¿cuánto cuesta el retiro?,preguntar_retiro
+quiero gelish con pedicure spa,elegir_opcion_servicio
+elige para mí entre japonés o nanoplastia,elegir_opcion_servicio
+"quiero pestañas volumen, no clásicas",elegir_opcion_servicio
+me gusta más el diseño natural,elegir_opcion_servicio
+¿tienes espacio el viernes a las 2?,preguntar_disponibilidad
+¿puedes el sábado a las 11?,preguntar_disponibilidad
+¿hay lugar hoy a las 5?,preguntar_disponibilidad
+¿qué horarios tienes disponibles?,preguntar_disponibilidad
+¿qué necesito para agendar relleno de labios?,preguntar_requisitos_agendar
+¿tengo que hacer cita previa para enzimas?,preguntar_requisitos_agendar
+¿necesito consulta antes de la cita?,preguntar_requisitos_agendar
+¿hay que pagar anticipo?,preguntar_requisitos_agendar
+¿Cuánto cuesta tinte?,preguntar_precios
+Quiero agendar tinte,agendar_cita
+¿Qué beneficios tiene tinte?,preguntar_beneficios
+¿Me recomiendas tinte?,recomendar_tratamiento
+¿Tienen promoción en tinte?,solicitar_promociones
+¿Cuánto cuesta corte?,preguntar_precios
+Quiero agendar corte,agendar_cita
+¿Qué beneficios tiene corte?,preguntar_beneficios
+¿Me recomiendas corte?,recomendar_tratamiento
+¿Tienen promoción en corte?,solicitar_promociones
+¿Cuánto cuesta alaciado?,preguntar_precios
+Quiero agendar alaciado,agendar_cita
+¿Qué beneficios tiene alaciado?,preguntar_beneficios
+¿Me recomiendas alaciado?,recomendar_tratamiento
+¿Tienen promoción en alaciado?,solicitar_promociones
+¿Cuánto cuesta keratina?,preguntar_precios
+Quiero agendar keratina,agendar_cita
+¿Qué beneficios tiene keratina?,preguntar_beneficios
+¿Me recomiendas keratina?,recomendar_tratamiento
+¿Tienen promoción en keratina?,solicitar_promociones
+¿Cuánto cuesta nanoplastia?,preguntar_precios
+Quiero agendar nanoplastia,agendar_cita
+¿Qué beneficios tiene nanoplastia?,preguntar_beneficios
+¿Me recomiendas nanoplastia?,recomendar_tratamiento
+¿Tienen promoción en nanoplastia?,solicitar_promociones
+¿Cuánto cuesta efectos de color?,preguntar_precios
+Quiero agendar efectos de color,agendar_cita
+¿Qué beneficios tiene efectos de color?,preguntar_beneficios
+¿Me recomiendas efectos de color?,recomendar_tratamiento
+¿Tienen promoción en efectos de color?,solicitar_promociones
+¿Cuánto cuesta trenzas?,preguntar_precios
+Quiero agendar trenzas,agendar_cita
+¿Qué beneficios tiene trenzas?,preguntar_beneficios
+¿Me recomiendas trenzas?,recomendar_tratamiento
+¿Tienen promoción en trenzas?,solicitar_promociones
+¿Cuánto cuesta extensiones?,preguntar_precios
+Quiero agendar extensiones,agendar_cita
+¿Qué beneficios tiene extensiones?,preguntar_beneficios
+¿Me recomiendas extensiones?,recomendar_tratamiento
+¿Tienen promoción en extensiones?,solicitar_promociones
+¿Cuánto cuesta tratamientos?,preguntar_precios
+Quiero agendar tratamientos,agendar_cita
+¿Qué beneficios tiene tratamientos?,preguntar_beneficios
+¿Me recomiendas tratamientos?,recomendar_tratamiento
+¿Tienen promoción en tratamientos?,solicitar_promociones
+¿Cuánto cuesta clásicas?,preguntar_precios
+Quiero agendar clásicas,agendar_cita
+¿Qué beneficios tiene clásicas?,preguntar_beneficios
+¿Me recomiendas clásicas?,preguntar_beneficios
+¿Tienen promoción en clásicas?,solicitar_promociones
+¿Cuánto cuesta híbridas?,preguntar_precios
+Quiero agendar híbridas,agendar_cita
+¿Qué beneficios tiene híbridas?,preguntar_beneficios
+¿Me recomiendas híbridas?,preguntar_beneficios
+¿Tienen promoción en híbridas?,solicitar_promociones
+¿Cuánto cuesta volumen?,preguntar_precios
+Quiero agendar volumen,agendar_cita
+¿Qué beneficios tiene volumen?,preguntar_beneficios
+¿Me recomiendas volumen?,preguntar_beneficios
+¿Tienen promoción en volumen?,solicitar_promociones
+¿Cuánto cuesta rímel?,preguntar_precios
+Quiero agendar rímel,agendar_cita
+¿Qué beneficios tiene rímel?,preguntar_beneficios
+¿Me recomiendas rímel?,preguntar_beneficios
+¿Tienen promoción en rímel?,solicitar_promociones
+¿Cuánto cuesta efecto mojado?,preguntar_precios
+Quiero agendar efecto mojado,agendar_cita
+¿Qué beneficios tiene efecto mojado?,preguntar_beneficios
+¿Me recomiendas efecto mojado?,preguntar_beneficios
+¿Tienen promoción en efecto mojado?,solicitar_promociones
+¿Cuánto cuesta volumen americano?,preguntar_precios
+Quiero agendar volumen americano,agendar_cita
+¿Qué beneficios tiene volumen americano?,preguntar_beneficios
+¿Me recomiendas volumen americano?,preguntar_beneficios
+¿Tienen promoción en volumen americano?,solicitar_promociones
+¿Cuánto cuesta volumen hawaiano?,preguntar_precios
+Quiero agendar volumen hawaiano,agendar_cita
+¿Qué beneficios tiene volumen hawaiano?,preguntar_beneficios
+¿Me recomiendas volumen hawaiano?,preguntar_beneficios
+¿Tienen promoción en volumen hawaiano?,solicitar_promociones
+¿Cuánto cuesta volumen ruso?,preguntar_precios
+Quiero agendar volumen ruso,agendar_cita
+¿Qué beneficios tiene volumen ruso?,preguntar_beneficios
+¿Me recomiendas volumen ruso?,preguntar_beneficios
+¿Tienen promoción en volumen ruso?,solicitar_promociones
+¿Cuánto cuesta volumen egipcio?,preguntar_precios
+Quiero agendar volumen egipcio,agendar_cita
+¿Qué beneficios tiene volumen egipcio?,preguntar_beneficios
+¿Me recomiendas volumen egipcio?,preguntar_beneficios
+¿Tienen promoción en volumen egipcio?,solicitar_promociones
+¿Cuánto cuesta efecto coreano?,preguntar_precios
+Quiero agendar efecto coreano,agendar_cita
+¿Qué beneficios tiene efecto coreano?,preguntar_beneficios
+¿Me recomiendas efecto coreano?,preguntar_beneficios
+¿Tienen promoción en efecto coreano?,solicitar_promociones
+¿Cuánto cuesta wispy?,preguntar_precios
+Quiero agendar wispy,agendar_cita
+¿Qué beneficios tiene wispy?,preguntar_beneficios
+¿Me recomiendas wispy?,preguntar_beneficios
+¿Tienen promoción en wispy?,solicitar_promociones
+¿Cuánto cuesta choppy?,preguntar_precios
+Quiero agendar choppy,agendar_cita
+¿Qué beneficios tiene choppy?,preguntar_beneficios
+¿Me recomiendas choppy?,preguntar_beneficios
+¿Tienen promoción en choppy?,solicitar_promociones
+¿Cuánto cuesta foxy eye?,preguntar_precios
+Quiero agendar foxy eye,agendar_cita
+¿Qué beneficios tiene foxy eye?,preguntar_beneficios
+¿Me recomiendas foxy eye?,preguntar_beneficios
+¿Tienen promoción en foxy eye?,solicitar_promociones
+¿Cuánto cuesta degradados de color?,preguntar_precios
+Quiero agendar degradados de color,agendar_cita
+¿Qué beneficios tiene degradados de color?,preguntar_beneficios
+¿Me recomiendas degradados de color?,preguntar_beneficios
+¿Tienen promoción en degradados de color?,solicitar_promociones
+¿Cuánto cuesta lifting?,preguntar_precios
+Quiero agendar lifting,agendar_cita
+¿Qué beneficios tiene lifting?,preguntar_beneficios
+¿Me recomiendas lifting?,preguntar_beneficios
+¿Tienen promoción en lifting?,solicitar_promociones
+¿Cuánto cuesta microblading?,preguntar_precios
+Quiero agendar microblading,agendar_cita
+¿Qué beneficios tiene microblading?,preguntar_beneficios
+¿Me recomiendas microblading?,preguntar_beneficios
+¿Tienen promoción en microblading?,solicitar_promociones
+¿Cuánto cuesta retiro microblading?,preguntar_precios
+Quiero agendar retiro microblading,agendar_cita
+¿Qué beneficios tiene retiro microblading?,preguntar_beneficios
+¿Me recomiendas retiro microblading?,preguntar_beneficios
+¿Tienen promoción en retiro microblading?,solicitar_promociones
+¿Cuánto cuesta shading?,preguntar_precios
+Quiero agendar shading,agendar_cita
+¿Qué beneficios tiene shading?,preguntar_beneficios
+¿Me recomiendas shading?,preguntar_beneficios
+¿Tienen promoción en shading?,solicitar_promociones
+¿Cuánto cuesta laminado hd?,preguntar_precios
+Quiero agendar laminado hd,agendar_cita
+¿Qué beneficios tiene laminado hd?,preguntar_beneficios
+¿Me recomiendas laminado hd?,preguntar_beneficios
+¿Tienen promoción en laminado hd?,solicitar_promociones
+¿Cuánto cuesta henna?,preguntar_precios
+Quiero agendar henna,agendar_cita
+¿Qué beneficios tiene henna?,preguntar_beneficios
+¿Me recomiendas henna?,preguntar_beneficios
+¿Tienen promoción en henna?,solicitar_promociones
+¿Cuánto cuesta henna 4k?,preguntar_precios
+Quiero agendar henna 4k,agendar_cita
+¿Qué beneficios tiene henna 4k?,preguntar_beneficios
+¿Me recomiendas henna 4k?,preguntar_beneficios
+¿Tienen promoción en henna 4k?,solicitar_promociones
+¿Cuánto cuesta diseño?,preguntar_precios
+Quiero agendar diseño,agendar_cita
+¿Qué beneficios tiene diseño?,preguntar_beneficios
+¿Me recomiendas diseño?,preguntar_beneficios
+¿Tienen promoción en diseño?,solicitar_promociones
+¿Cuánto cuesta culturales?,preguntar_precios
+Quiero agendar culturales,agendar_cita
+¿Qué beneficios tiene culturales?,preguntar_beneficios
+¿Me recomiendas culturales?,preguntar_beneficios
+¿Tienen promoción en culturales?,solicitar_promociones
+¿Cuánto cuesta rubber?,preguntar_precios
+Quiero agendar rubber,agendar_cita
+¿Qué beneficios tiene rubber?,preguntar_beneficios
+¿Me recomiendas rubber?,preguntar_beneficios
+¿Tienen promoción en rubber?,solicitar_promociones
+¿Cuánto cuesta gelish manos?,preguntar_precios
+Quiero agendar gelish manos,agendar_cita
+¿Qué beneficios tiene gelish manos?,preguntar_beneficios
+¿Me recomiendas gelish manos?,preguntar_beneficios
+¿Tienen promoción en gelish manos?,solicitar_promociones
+¿Cuánto cuesta gelish pies?,preguntar_precios
+Quiero agendar gelish pies,agendar_cita
+¿Qué beneficios tiene gelish pies?,preguntar_beneficios
+¿Me recomiendas gelish pies?,preguntar_beneficios
+¿Tienen promoción en gelish pies?,solicitar_promociones
+¿Cuánto cuesta tip?,preguntar_precios
+Quiero agendar tip,agendar_cita
+¿Qué beneficios tiene tip?,preguntar_beneficios
+¿Me recomiendas tip?,preguntar_beneficios
+¿Tienen promoción en tip?,solicitar_promociones
+¿Cuánto cuesta soft gel?,preguntar_precios
+Quiero agendar soft gel,agendar_cita
+¿Qué beneficios tiene soft gel?,preguntar_beneficios
+¿Me recomiendas soft gel?,preguntar_beneficios
+¿Tienen promoción en soft gel?,solicitar_promociones
+¿Cuánto cuesta manicura rusa?,preguntar_precios
+Quiero agendar manicura rusa,agendar_cita
+¿Qué beneficios tiene manicura rusa?,preguntar_beneficios
+¿Me recomiendas manicura rusa?,preguntar_beneficios
+¿Tienen promoción en manicura rusa?,solicitar_promociones
+¿Cuánto cuesta manicura spa?,preguntar_precios
+Quiero agendar manicura spa,agendar_cita
+¿Qué beneficios tiene manicura spa?,preguntar_beneficios
+¿Me recomiendas manicura spa?,preguntar_beneficios
+¿Tienen promoción en manicura spa?,solicitar_promociones
+¿Cuánto cuesta acripie?,preguntar_precios
+Quiero agendar acripie,agendar_cita
+¿Qué beneficios tiene acripie?,preguntar_beneficios
+¿Me recomiendas acripie?,preguntar_beneficios
+¿Tienen promoción en acripie?,solicitar_promociones
+¿Cuánto cuesta pedicura spa?,preguntar_precios
+Quiero agendar pedicura spa,agendar_cita
+¿Qué beneficios tiene pedicura spa?,preguntar_beneficios
+¿Me recomiendas pedicura spa?,preguntar_beneficios
+¿Tienen promoción en pedicura spa?,solicitar_promociones
+¿Cuánto cuesta facial?,preguntar_precios
+Quiero agendar facial,agendar_cita
+¿Qué beneficios tiene facial?,preguntar_beneficios
+¿Me recomiendas facial?,recomendar_tratamiento
+¿Tienen promoción en facial?,solicitar_promociones
+¿Cuánto cuesta relleno labios?,preguntar_precios
+Quiero agendar relleno labios,agendar_cita
+¿Qué beneficios tiene relleno labios?,preguntar_beneficios
+¿Me recomiendas relleno labios?,recomendar_tratamiento
+¿Tienen promoción en relleno labios?,solicitar_promociones
+¿Cuánto cuesta micropigmentación?,preguntar_precios
+Quiero agendar micropigmentación,agendar_cita
+¿Qué beneficios tiene micropigmentación?,preguntar_beneficios
+¿Me recomiendas micropigmentación?,recomendar_tratamiento
+¿Tienen promoción en micropigmentación?,solicitar_promociones
+¿Cuánto cuesta bb glow?,preguntar_precios
+Quiero agendar bb glow,agendar_cita
+¿Qué beneficios tiene bb glow?,preguntar_beneficios
+¿Me recomiendas bb glow?,recomendar_tratamiento
+¿Tienen promoción en bb glow?,solicitar_promociones
+¿Cuánto cuesta bb lips?,preguntar_precios
+Quiero agendar bb lips,agendar_cita
+¿Qué beneficios tiene bb lips?,preguntar_beneficios
+¿Me recomiendas bb lips?,recomendar_tratamiento
+¿Tienen promoción en bb lips?,solicitar_promociones
+¿Cuánto cuesta cachetes?,preguntar_precios
+Quiero agendar cachetes,agendar_cita
+¿Qué beneficios tiene cachetes?,preguntar_beneficios
+¿Me recomiendas cachetes?,recomendar_tratamiento
+¿Tienen promoción en cachetes?,solicitar_promociones
+¿Cuánto cuesta papada?,preguntar_precios
+Quiero agendar papada,agendar_cita
+¿Qué beneficios tiene papada?,preguntar_beneficios
+¿Me recomiendas papada?,recomendar_tratamiento
+¿Tienen promoción en papada?,solicitar_promociones
+¿Cuánto cuesta brazo?,preguntar_precios
+Quiero agendar brazo,agendar_cita
+¿Qué beneficios tiene brazo?,preguntar_beneficios
+¿Me recomiendas brazo?,recomendar_tratamiento
+¿Tienen promoción en brazo?,solicitar_promociones
+¿Cuánto cuesta abdomen?,preguntar_precios
+Quiero agendar abdomen,agendar_cita
+¿Qué beneficios tiene abdomen?,preguntar_beneficios
+¿Me recomiendas abdomen?,recomendar_tratamiento
+¿Tienen promoción en abdomen?,solicitar_promociones
+¿Cuánto cuesta cintura?,preguntar_precios
+Quiero agendar cintura,agendar_cita
+¿Qué beneficios tiene cintura?,preguntar_beneficios
+¿Me recomiendas cintura?,recomendar_tratamiento
+¿Tienen promoción en cintura?,solicitar_promociones
+"Quiero hacerme relleno labios, ¿puedo?",requiere_confirmacion
+¿Puedo agendar relleno labios?,requiere_confirmacion
+¿Está disponible relleno labios?,requiere_confirmacion
+¿Necesito consulta para relleno labios?,requiere_confirmacion
+¿relleno labios requiere confirmación?,requiere_confirmacion
+"Quiero hacerme micropigmentación, ¿puedo?",requiere_confirmacion
+¿Puedo agendar micropigmentación?,requiere_confirmacion
+¿Está disponible micropigmentación?,requiere_confirmacion
+¿Necesito consulta para micropigmentación?,requiere_confirmacion
+¿micropigmentación requiere confirmación?,requiere_confirmacion
+"Quiero hacerme extensiones, ¿puedo?",requiere_confirmacion
+¿Puedo agendar extensiones?,requiere_confirmacion
+¿Está disponible extensiones?,requiere_confirmacion
+¿Necesito consulta para extensiones?,requiere_confirmacion
+¿extensiones requiere confirmación?,requiere_confirmacion
+"Quiero hacerme volumen ruso, ¿puedo?",requiere_confirmacion
+¿Puedo agendar volumen ruso?,requiere_confirmacion
+¿Está disponible volumen ruso?,requiere_confirmacion
+¿Necesito consulta para volumen ruso?,requiere_confirmacion
+¿volumen ruso requiere confirmación?,requiere_confirmacion
+"Quiero hacerme volumen egipcio, ¿puedo?",requiere_confirmacion
+¿Puedo agendar volumen egipcio?,requiere_confirmacion
+¿Está disponible volumen egipcio?,requiere_confirmacion
+¿Necesito consulta para volumen egipcio?,requiere_confirmacion
+¿volumen egipcio requiere confirmación?,requiere_confirmacion
+"Quiero hacerme volumen hawaiano, ¿puedo?",requiere_confirmacion
+¿Puedo agendar volumen hawaiano?,requiere_confirmacion
+¿Está disponible volumen hawaiano?,requiere_confirmacion
+¿Necesito consulta para volumen hawaiano?,requiere_confirmacion
+¿volumen hawaiano requiere confirmación?,requiere_confirmacion
+"Quiero hacerme volumen americano, ¿puedo?",requiere_confirmacion
+¿Puedo agendar volumen americano?,requiere_confirmacion
+¿Está disponible volumen americano?,requiere_confirmacion
+¿Necesito consulta para volumen americano?,requiere_confirmacion
+¿volumen americano requiere confirmación?,requiere_confirmacion
+"Quiero hacerme nanoplastia, ¿puedo?",requiere_confirmacion
+¿Puedo agendar nanoplastia?,requiere_confirmacion
+¿Está disponible nanoplastia?,requiere_confirmacion
+¿Necesito consulta para nanoplastia?,requiere_confirmacion
+¿nanoplastia requiere confirmación?,requiere_confirmacion
+"Quiero hacerme shading, ¿puedo?",requiere_confirmacion
+¿Puedo agendar shading?,requiere_confirmacion
+¿Está disponible shading?,requiere_confirmacion
+¿Necesito consulta para shading?,requiere_confirmacion
+¿shading requiere confirmación?,requiere_confirmacion
+"Quiero hacerme bb glow, ¿puedo?",requiere_confirmacion
+¿Puedo agendar bb glow?,requiere_confirmacion
+¿Está disponible bb glow?,requiere_confirmacion
+¿Necesito consulta para bb glow?,requiere_confirmacion
+¿bb glow requiere confirmación?,requiere_confirmacion
+"Quiero hacerme bb lips, ¿puedo?",requiere_confirmacion
+¿Puedo agendar bb lips?,requiere_confirmacion
+¿Está disponible bb lips?,requiere_confirmacion
+¿Necesito consulta para bb lips?,requiere_confirmacion
+¿bb lips requiere confirmación?,requiere_confirmacion
+"Quiero hacerme henna 4k, ¿puedo?",requiere_confirmacion
+¿Puedo agendar henna 4k?,requiere_confirmacion
+¿Está disponible henna 4k?,requiere_confirmacion
+¿Necesito consulta para henna 4k?,requiere_confirmacion
+¿henna 4k requiere confirmación?,requiere_confirmacion
+"Quiero hacerme alaciado, ¿puedo?",requiere_confirmacion
+¿Puedo agendar alaciado?,requiere_confirmacion
+¿Está disponible alaciado?,requiere_confirmacion
+¿Necesito consulta para alaciado?,requiere_confirmacion
+¿alaciado requiere confirmación?,requiere_confirmacion
+"Quiero hacerme tinte, ¿puedo?",requiere_confirmacion
+¿Puedo agendar tinte?,requiere_confirmacion
+¿Está disponible tinte?,requiere_confirmacion
+¿Necesito consulta para tinte?,requiere_confirmacion
+¿tinte requiere confirmación?,requiere_confirmacion
+"Quiero hacerme efectos de color, ¿puedo?",requiere_confirmacion
+¿Puedo agendar efectos de color?,requiere_confirmacion
+¿Está disponible efectos de color?,requiere_confirmacion
+¿Necesito consulta para efectos de color?,requiere_confirmacion
+¿efectos de color requiere confirmación?,requiere_confirmacion
+"Quiero hacerme cachetes, ¿puedo?",requiere_confirmacion
+¿Puedo agendar cachetes?,requiere_confirmacion
+¿Está disponible cachetes?,requiere_confirmacion
+¿Necesito consulta para cachetes?,requiere_confirmacion
+¿cachetes requiere confirmación?,requiere_confirmacion
+"Quiero hacerme papada, ¿puedo?",requiere_confirmacion
+¿Puedo agendar papada?,requiere_confirmacion
+¿Está disponible papada?,requiere_confirmacion
+¿Necesito consulta para papada?,requiere_confirmacion
+¿papada requiere confirmación?,requiere_confirmacion
+"Quiero hacerme abdomen, ¿puedo?",requiere_confirmacion
+¿Puedo agendar abdomen?,requiere_confirmacion
+¿Está disponible abdomen?,requiere_confirmacion
+¿Necesito consulta para abdomen?,requiere_confirmacion
+¿abdomen requiere confirmación?,requiere_confirmacion
+"Quiero hacerme cintura, ¿puedo?",requiere_confirmacion
+¿Puedo agendar cintura?,requiere_confirmacion
+¿Está disponible cintura?,requiere_confirmacion
+¿Necesito consulta para cintura?,requiere_confirmacion
+¿cintura requiere confirmación?,requiere_confirmacion
+"Quiero hacerme brazo, ¿puedo?",requiere_confirmacion
+¿Puedo agendar brazo?,requiere_confirmacion
+¿Está disponible brazo?,requiere_confirmacion
+¿Necesito consulta para brazo?,requiere_confirmacion
+¿brazo requiere confirmación?,requiere_confirmacion
+No estoy segura qué servicio necesito,indecision_cliente
+¿Qué me recomiendan ustedes?,indecision_cliente
+¿Me pueden orientar?,indecision_cliente
+Quiero un cambio de look pero no sé qué,indecision_cliente
+¿Puedo ver fotos de trabajos anteriores?,solicitar_catalogo
+¿Tienen ejemplos de resultados?,solicitar_catalogo
+¿Cuánto tiempo dura el tratamiento?,preguntar_beneficios
+¿Duele el relleno?,preguntar_beneficios
+¿El resultado es inmediato?,preguntar_beneficios
+¿Es normal que arda un poco después?,preguntar_beneficios
+¿Tengo que hacer cita previa?,preguntar_requisitos_agendar
+¿Se puede pagar después?,preguntar_requisitos_agendar
+Gracias,smalltalk
+Muchas gracias,smalltalk
+Gracias hermosa,smalltalk
+Eres un amor,smalltalk
+Qué linda respuesta,smalltalk
+"Ok, está bien",smalltalk
+"Perfecto, gracias",smalltalk
+Qué bonito mensaje,smalltalk
+Está muy caro,objecion_cliente
+Vi otro salón más barato,objecion_cliente
+No me gustó el resultado pasado,objecion_cliente
+¿Por qué cobran el retiro?,objecion_cliente
+¿Y si no me gusta?,objecion_cliente
+He visto precios más bajos,objecion_cliente
+¿Pueden hacer descuento?,objecion_cliente
+¿Me puedes atender ya?,urgencia_cliente
+¿Tienen espacio hoy?,urgencia_cliente
+¿Tienen algo ahorita?,urgencia_cliente
+Es urgente,urgencia_cliente
+Quiero algo para hoy mismo,urgencia_cliente
+¿Hay disponibilidad inmediata?,urgencia_cliente
+¿Qué hago si me arde?,post_cuidado
+¿Puedo mojarme las pestañas?,post_cuidado
+¿Cuándo puedo maquillarme?,post_cuidado
+¿Puedo hacer ejercicio después?,post_cuidado
+¿Cuánto tiempo debo esperar?,post_cuidado
+¿Hay que cuidarse del sol?,post_cuidado
+¿Dónde puedo dejar reseña?,post_cuidado
+¿Puedo hablar con alguien?,necesita_humana
+Quiero que me atienda Moni directamente,necesita_humana
+Esto no me ayudó,necesita_humana
+Prefiero hablar con una persona,necesita_humana
+¿Tienen número directo?,necesita_humana
+¿Vendes perfumes?,fuera_de_servicio
+Tengo un negocio y quiero colaborar,fuera_de_servicio
+"Vendo cremas, ¿interesada?",fuera_de_servicio
+¿Te interesa un intercambio?,fuera_de_servicio
+¿Puedo anunciarme aquí?,fuera_de_servicio
+Estoy buscando trabajo,fuera_de_servicio
