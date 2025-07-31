@@ -3,3 +3,5 @@ spacy
 torch
 transformers
 firebase-admin
+fastapi
+uvicorn

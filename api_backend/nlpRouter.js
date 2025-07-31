@@ -1,5 +1,5 @@
-const { classifyIntent } = require("./classifyIntent");
-const { extractSlots } = require("./extractSlots");
+const { classifyIntent } = require("../classifyIntent");
+const { extractSlots } = require("../extractSlots");
 
 async function nlpRouter(messageText) {
   try {

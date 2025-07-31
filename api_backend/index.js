@@ -3,10 +3,25 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 const { nlpRouter } = require("./nlpRouter");
-const { handleBotAction } = require("./messageDispatcher");
-const { handleUnsupportedMedia } = require("./mediaHandler");
+const { handleBotAction } = require("../messageDispatcher");
+const { handleUnsupportedMedia } = require("../mediaHandler");
 
 app.use(express.json());
+
+app.get("/webhook", (req, res) => {
+  const VERIFY_TOKEN = "beauty-bot-token"; // must match Meta
+
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("✅ Webhook verified");
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+});
 
 app.post("/webhook", async (req, res) => {
   try {
@@ -57,19 +72,4 @@ app.get("/", (req, res) => {
 
 app.listen(port, () => {
   console.log(`🔥 Server listening on port ${port}`);
-});
-
-app.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = "beauty-bot-token"; // must match Meta
-
-  const mode = req.query["hub.mode"];
-  const token = req.query["hub.verify_token"];
-  const challenge = req.query["hub.challenge"];
-
-  if (mode === "subscribe" && token === VERIFY_TOKEN) {
-    console.log("✅ Webhook verified");
-    res.status(200).send(challenge);
-  } else {
-    res.sendStatus(403);
-  }
 });

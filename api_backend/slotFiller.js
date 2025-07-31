@@ -1,4 +1,4 @@
-const { extractSlots } = require("./extractSlots");
+const { extractSlots } = require("../extractSlots");
 
 async function getSlotsFromText(text) {
   try {
