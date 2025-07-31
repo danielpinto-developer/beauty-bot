@@ -1,7 +1,18 @@
-# Python bytecode
-__pycache__/
+# 🤖 Models
+*.pt
+*.bin
+*.safetensors
+api_backend/bert_intent_classifier/beto-intents/
+api_backend/spacy_ner_training/output/
 
-# Python virtual environment
+# 🧠 Python Virtual Env
 venv/
-*.local
-firebase-service-account
+__pycache__/
+*.pyc
+
+# 💣 Node Stuff
+functions/node_modules/
+
+# 🧼 Render junk (optional)
+*.log
+.DS_Store
