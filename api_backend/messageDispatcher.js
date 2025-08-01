@@ -104,27 +104,40 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
   if (intent === "book_appointment") {
     const fecha = slotResult?.fecha;
     const hora = slotResult?.hora;
-    const servicio = slotResult?.servicio || "el servicio deseado";
+    const servicio = slotResult?.servicio;
 
-    let reply = `Claro, podemos agendar tu cita para ${servicio}`;
-    if (fecha && hora) {
-      reply += ` para ${fecha} a las ${hora}`;
-    } else if (fecha) {
-      reply += ` para ${fecha}`;
+    let reply = `Claro`;
+
+    if (servicio) {
+      reply += `, podemos agendar tu cita para ${servicio}`;
+      const price = precios[servicio.toLowerCase()];
+      if (price) reply += ` (costo: ${price})`;
     }
 
-    reply += ". En unos momentos confirmamos la disponibilidad de tu cita. ✨";
+    if (fecha && hora) {
+      reply += ` el ${fecha} a las ${hora}. En unos momentos confirmamos la disponibilidad de tu cita ✨`;
+    } else {
+      const missing = [];
+      if (!fecha) missing.push("fecha");
+      if (!hora) missing.push("hora");
+      if (!servicio) missing.push("servicio");
 
-    const price = precios[servicio?.toLowerCase()];
-    if (price)
-      reply += ` El precio de ${servicio} en nuestro salón es de ${price}.`;
+      const prompts = {
+        fecha: "¿Qué día te gustaría agendar tu cita?",
+        hora: "¿A qué hora te gustaría venir?",
+        servicio: "¿Qué servicio deseas?",
+      };
+
+      reply += ". " + missing.map((m) => prompts[m]).join(" ");
+    }
 
     await notifyMoni(
       phone,
-      `Nueva cita solicitada: ${fecha || "fecha?"} ${
-        hora || "hora?"
-      } (${servicio})`
+      `Nueva cita solicitada: ${fecha || "fecha?"} ${hora || "hora?"} (${
+        servicio || "servicio?"
+      })`
     );
+
     return logAndSend(reply);
   }
 
