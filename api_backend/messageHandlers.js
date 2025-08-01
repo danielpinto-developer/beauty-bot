@@ -1,6 +1,6 @@
 const { getOpenRouterReply } = require("./openrouter");
 const { sendTextMessage } = require("./whatsapp");
-const { db, Timestamp } = require("./firebase");
+const { db, Timestamp } = require("../functions/firebase");
 
 const greetingIntents = {
   saludo: {

@@ -35,25 +35,48 @@ async def verify_webhook(request: Request):
 async def receive_message(request: Request):
     try:
         data = await request.json()
-        message_data = data["entry"][0]["changes"][0]["value"]["messages"][0]
-        phone = message_data["from"]
+        print("📥 Incoming webhook data:", data)  # Add logging
+
+        # Defensive parsing
+        entry = data.get("entry", [{}])[0]
+        changes = entry.get("changes", [{}])[0]
+        value = changes.get("value", {})
+        messages = value.get("messages", [])
+
+        if not messages:
+            print("⚠️ No 'messages' in payload")
+            return {"status": "no messages"}
+
+        message_data = messages[0]
+        phone = message_data.get("from")
         text = message_data.get("text", {}).get("body", "")
 
+        if not phone or not text:
+            print("⚠️ Missing phone or text:", phone, text)
+            return {"status": "invalid message"}
+
+        # Firestore check
         paused_doc = db.collection("bot_paused").document(phone).get()
         if paused_doc.exists and paused_doc.to_dict().get("paused", False):
+            print("⏸️ Bot is paused for", phone)
             return {"status": "bot paused"}
 
+        # Log user message
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "user",
             "message": text,
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        # 🚀 Call BERT (Cloud Run) to get intent
-        intent_response = requests.post(
-            "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
-            json={"text": text}
-        ).json()
+        # BERT intent prediction
+        try:
+            intent_response = requests.post(
+                "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
+                json={"text": text}
+            ).json()
+        except Exception as bert_err:
+            print("❌ Error calling BERT intent:", str(bert_err))
+            intent_response = {}
 
         intent = intent_response.get("intent")
 
@@ -62,6 +85,7 @@ async def receive_message(request: Request):
         else:
             reply = await get_openrouter_reply(text)
 
+        # Log bot response
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "bot",
             "message": reply,
@@ -72,6 +96,7 @@ async def receive_message(request: Request):
         return {"status": "message sent"}
 
     except Exception as e:
+        print("❌ Uncaught webhook error:", str(e))  # Log full error
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 @app.post("/send")

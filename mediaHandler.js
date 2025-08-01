@@ -7,7 +7,7 @@ function handleUnsupportedMedia(messageEntry) {
     return {
       phone,
       response:
-        "¡Gracias por tu mensaje! 🙌 En este momento BeautyBot solo puede responder a texto. Moni te responderá personalmente muy pronto ✨",
+        "¡Gracias por tu mensaje! 🙌 En unos momento respondemos.. Moni te responderá personalmente muy pronto ✨",
       action: "manual_media_review",
     };
   }
