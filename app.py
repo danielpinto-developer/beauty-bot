@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from firebase_admin import firestore, initialize_app, credentials
-from whatsapp import send_whatsapp_message
-from openrouter import get_openrouter_reply
+from whatsapp_api import send_whatsapp_message
+from openrouter_api import get_openrouter_reply
 import firebase_admin
 import os, json, requests
 
