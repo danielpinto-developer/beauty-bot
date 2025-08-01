@@ -13,7 +13,16 @@ const db = getFirestore();
 
 const notifyMoni = async (phone, reason) => {
   console.log(`📣 Notify Moni: ${phone} needs manual follow-up (${reason})`);
-  // TODO: optionally send WhatsApp alert to Moni here
+  // Optional: notify Moni via WhatsApp API
+};
+
+const precios = {
+  "uñas acrílicas": "$350 MXN",
+  "pestañas clásicas": "$300 MXN",
+  "lifting de cejas": "$280 MXN",
+  "lifting de pestañas": "$280 MXN",
+  bblips: "$400 MXN",
+  acripie: "$220 MXN",
 };
 
 async function logMessage({
@@ -39,8 +48,8 @@ async function logMessage({
   await addDoc(collection(db, "chats", phone, "messages"), data);
 }
 
-async function handleBotAction({ phone, text, nlpResult, slotResult }) {
-  console.log("📬 handleBotAction START", {
+async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
+  console.log("📬 messageDispatcher START", {
     phone,
     text,
     nlpResult,
@@ -70,9 +79,10 @@ async function handleBotAction({ phone, text, nlpResult, slotResult }) {
     slots: slotResult,
   });
 
+  // 🌸 Tiered logic
   if (intent === "greeting") {
     return logAndSend(
-      "¡Hola! Bienvenida a bb27 Studio 🌸 ¿En qué te puedo ayudar hoy?"
+      `Hola! Soy BeautyBot, la asistente de Beauty Blossoms en Zapopan, Jalisco. Podemos ofrecerte servicios de pestañas, uñas, cejas, enzimas, depilación y cabello. ¡Cuéntame, ¿qué servicio prefieres? Y ¿qué día te gustaría agendar tu cita? 😊`
     );
   }
 
@@ -83,15 +93,37 @@ async function handleBotAction({ phone, text, nlpResult, slotResult }) {
     );
   }
 
+  if (intent === "faq_precio" && slotResult?.servicio) {
+    const price = precios[slotResult.servicio.toLowerCase()];
+    const reply = price
+      ? `El precio de ${slotResult.servicio} en nuestro salón es de ${price}.`
+      : `Ese servicio lo manejamos con precios variables. ¿Te gustaría saber más o agendar una cita? 😊`;
+    return logAndSend(reply);
+  }
+
   if (intent === "book_appointment") {
-    const fecha = slotResult?.fecha || "una fecha por confirmar";
-    const hora = slotResult?.hora || "una hora por confirmar";
+    const fecha = slotResult?.fecha;
+    const hora = slotResult?.hora;
     const servicio = slotResult?.servicio || "el servicio deseado";
-    const reply = `¡Claro! Agendamos para ${fecha} a las ${hora} para ${servicio}. En unos momentos confirmamos la disponibilidad ✨`;
+
+    let reply = `Claro, podemos agendar tu cita para ${servicio}`;
+    if (fecha && hora) {
+      reply += ` para ${fecha} a las ${hora}`;
+    } else if (fecha) {
+      reply += ` para ${fecha}`;
+    }
+
+    reply += ". En unos momentos confirmamos la disponibilidad de tu cita. ✨";
+
+    const price = precios[servicio?.toLowerCase()];
+    if (price)
+      reply += ` El precio de ${servicio} en nuestro salón es de ${price}.`;
 
     await notifyMoni(
       phone,
-      `Nueva cita solicitada: ${fecha} ${hora} (${servicio})`
+      `Nueva cita solicitada: ${fecha || "fecha?"} ${
+        hora || "hora?"
+      } (${servicio})`
     );
     return logAndSend(reply);
   }
@@ -101,11 +133,12 @@ async function handleBotAction({ phone, text, nlpResult, slotResult }) {
     const hora = slotResult?.hora || "la hora acordada";
     const reply = `✅ Cita confirmada para ${fecha} a las ${hora}. Aquí te dejo los datos para enviar el anticipo de $100 MXN:
 
-💳 Banco BBVA
-CLABE: 012345678901234567
+💳 Banco BBVA  
+CLABE: 012345678901234567  
 Nombre: Beauty Blossoms
 
 Una vez hecho el pago, mándanos el comprobante 💖`;
+
     return logAndSend(reply);
   }
 
@@ -136,4 +169,4 @@ Una vez hecho el pago, mándanos el comprobante 💖`;
   }
 }
 
-module.exports = { handleBotAction };
+module.exports = { messageDispatcher };
