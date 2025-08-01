@@ -26,7 +26,7 @@ def get_openrouter_reply(user_text):
         "Content-Type": "application/json",
     }
     body = {
-        "model": "mistral/mistral-7b-instruct",  # ✅ Switched to supported model
+        "model": "mistralai/mixtral-8x7b-instruct",
         "temperature": 0.4,
         "max_tokens": 120,
         "messages": [
@@ -38,6 +38,7 @@ def get_openrouter_reply(user_text):
             },
         ],
     }
+
 
     try:
         res = requests.post(url, headers=headers, json=body)
