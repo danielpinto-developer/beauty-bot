@@ -54,30 +54,32 @@ async def receive_message(request: Request):
             print("⚠️ Missing phone or text:", phone, text)
             return {"status": "invalid message"}
 
+        # Check if bot is paused
         paused_doc = db.collection("bot_paused").document(phone).get()
         if paused_doc.exists and paused_doc.to_dict().get("paused", False):
             print("⏸️ Bot is paused for", phone)
             return {"status": "bot paused"}
 
+        # Log user message
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "user",
             "message": text,
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
+        # Get intent
         try:
             intent_response = requests.post(
                 "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
                 json={"text": text}
             )
             intent_response.raise_for_status()
-            intent_response = intent_response.json()
+            intent = intent_response.json().get("intent")
         except Exception as bert_err:
             print("❌ Error calling BERT intent:", str(bert_err))
-            intent_response = {"intent": None}
+            intent = None
 
-        intent = intent_response.get("intent")
-
+        # Decide reply
         if intent == "escalate_to_human":
             reply = "En un momento te contactamos con una persona del equipo 💬"
         else:
@@ -87,13 +89,16 @@ async def receive_message(request: Request):
                 print("❌ Error calling OpenRouter:", str(or_err))
                 reply = "Lo siento, ocurrió un error al generar la respuesta 🤖"
 
+        # Log bot reply
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "bot",
             "message": reply,
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        await send_whatsapp_message(phone, reply)
+        # ❗ FIXED: Don't await a sync function!
+        send_whatsapp_message(phone, reply)
+
         return {"status": "message sent"}
 
     except Exception as e:
@@ -108,7 +113,8 @@ async def send_admin_message(data: dict):
     if not phone or not message:
         return JSONResponse(content={"error": "Missing phone or message"}, status_code=400)
 
-    await send_whatsapp_message(phone, message)
+    # ❗ FIXED: Don't await a sync function!
+    send_whatsapp_message(phone, message)
 
     db.collection("chats").document(phone).collection("messages").add({
         "sender": "admin",
