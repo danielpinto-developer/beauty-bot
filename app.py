@@ -120,8 +120,7 @@ async def receive_message(request: Request):
 
     except Exception as e:
         print("❌ Uncaught webhook error:", str(e))
-        return JSONResponse(content={"error": str(e)}, status_code=500})
-
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 @app.post("/send")
 async def send_admin_message(data: dict):
