@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 const { nlpRouter } = require("./nlpRouter");
-const { handleBotAction } = require("../messageDispatcher");
+const { handleBotAction } = require("./messageDispatcher");
 const { handleUnsupportedMedia } = require("../mediaHandler");
 
 app.use(express.json());

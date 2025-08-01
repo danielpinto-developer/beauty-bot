@@ -630,7 +630,7 @@
 
       // Load chat list in real-time
       const loadChatThreads = () => {
-        const chatsCol = collection(db, "conversations");
+        const chatsCol = collection(db, "chats");
 
         onSnapshot(chatsCol, (snapshot) => {
           chatThreadsEl.innerHTML = "";
@@ -649,7 +649,7 @@
       const loadMessagesForUser = async (userId) => {
         chatWindowEl.innerHTML = "<div>Cargando mensajes...</div>";
 
-        const msgRef = collection(db, "conversations", userId, "messages");
+        const msgRef = collection(db, "chats", userId, "messages");
         const q = query(msgRef, orderBy("timestamp"));
 
         onSnapshot(q, (snapshot) => {
@@ -679,7 +679,7 @@
         const text = messageInput.value.trim();
         if (!text || !activePhone) return;
 
-        await addDoc(collection(db, "conversations", activePhone, "messages"), {
+        await addDoc(collection(db, "chats", activePhone, "messages"), {
           sender: "admin",
           text,
           timestamp: serverTimestamp(),
@@ -702,7 +702,7 @@
         chatWindowEl.innerHTML = "";
 
         const messagesSnapshot = await db
-          .collection("conversations")
+          .collection("chats")
           .doc(phone)
           .collection("messages")
           .orderBy("timestamp", "asc")
