@@ -17,9 +17,11 @@ cred = credentials.Certificate(json.loads(firebase_json))
 initialize_app(cred)
 db = firestore.client()
 
+
 @app.get("/")
 def root():
     return {"status": "BeautyBot está en línea 💄🤖"}
+
 
 @app.get("/webhook")
 async def verify_webhook(request: Request):
@@ -30,6 +32,7 @@ async def verify_webhook(request: Request):
     ):
         return int(params.get("hub.challenge"))
     return JSONResponse(content={"error": "Unauthorized"}, status_code=403)
+
 
 @app.post("/webhook")
 async def receive_message(request: Request):
@@ -48,7 +51,6 @@ async def receive_message(request: Request):
 
         message_data = messages[0]
 
-        # ✅ NEW: Filter out non-text message types
         message_type = message_data.get("type")
         if message_type != "text":
             print("⚠️ Skipping non-text message type:", message_type)
@@ -66,12 +68,22 @@ async def receive_message(request: Request):
             print("⏸️ Bot is paused for", phone)
             return {"status": "bot paused"}
 
+        # ✅ Ensure chat thread doc exists with visible data
+        db.collection("chats").document(phone).set({
+            "last_updated": firestore.SERVER_TIMESTAMP,
+            "placeholder": True  # 👈 Needed so admin.html sees it
+        }, merge=True)
+
+        # ✅ Log inbound (user) message
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "user",
             "message": text,
+            "text": text,
+            "direction": "inbound",
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
+        # NLP routing
         try:
             intent_response = requests.post(
                 "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
@@ -92,22 +104,24 @@ async def receive_message(request: Request):
                 print("❌ Error calling OpenRouter:", str(or_err))
                 reply = "Lo siento, ocurrió un error al generar la respuesta 🤖"
 
+        # ✅ Log outbound (bot) reply
         db.collection("chats").document(phone).collection("messages").add({
-            "sender": "user",
-            "message": text,
-            "text": text,
-            "direction": "inbound",
+            "sender": "bot",
+            "message": reply,
+            "text": reply,
+            "direction": "outbound",
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        # ✅ Don't await a sync function
+        # ✅ Send WhatsApp reply (non-blocking)
         send_whatsapp_message(phone, reply)
 
         return {"status": "message sent"}
 
     except Exception as e:
         print("❌ Uncaught webhook error:", str(e))
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        return JSONResponse(content={"error": str(e)}, status_code=500})
+
 
 @app.post("/send")
 async def send_admin_message(data: dict):
@@ -117,18 +131,26 @@ async def send_admin_message(data: dict):
     if not phone or not message:
         return JSONResponse(content={"error": "Missing phone or message"}, status_code=400)
 
-    # ❗ FIXED: Don't await a sync function!
+    # ✅ Ensure chat thread exists
+    db.collection("chats").document(phone).set({
+        "last_updated": firestore.SERVER_TIMESTAMP,
+        "placeholder": True  # 👈 Prevents snapshot.empty in admin.html
+    }, merge=True)
+
+    # ✅ Send via WhatsApp
     send_whatsapp_message(phone, message)
 
+    # ✅ Log to Firestore
     db.collection("chats").document(phone).collection("messages").add({
-        "sender": "bot",
-        "message": reply,
-        "text": reply,
+        "sender": "admin",
+        "message": message,
+        "text": message,
         "direction": "outbound",
         "timestamp": firestore.SERVER_TIMESTAMP,
     })
 
     return {"status": "admin message sent"}
+
 
 @app.post("/toggle-bot/{phone}")
 async def toggle_bot(phone: str):

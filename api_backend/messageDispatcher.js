@@ -1,10 +1,12 @@
-// api_backend/messageDispatcher.js (or wherever you want it)
+// api_backend/messageDispatcher.js
 const { sendMessage } = require("./whatsapp");
 const {
   getFirestore,
   collection,
   addDoc,
   serverTimestamp,
+  doc,
+  setDoc,
 } = require("firebase-admin/firestore");
 const { getOpenRouterReply } = require("./openrouterFallback");
 
@@ -15,9 +17,28 @@ const notifyMoni = async (phone, reason) => {
 };
 
 async function handleBotAction({ phone, text, nlpResult, slotResult }) {
+  console.log("📬 handleBotAction START", {
+    phone,
+    text,
+    nlpResult,
+    slotResult,
+  });
   const { intent, confidence, action, response } = nlpResult;
 
-  // Log to "chats"
+  // Ensure the parent "chats/{phone}" doc exists so admin panel can see it
+  try {
+    await setDoc(
+      doc(db, "chats", phone),
+      {
+        createdAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+  } catch (err) {
+    console.error("⚠️ Failed to create parent chat doc:", err);
+  }
+
+  // Log user message to "chats/{phone}/messages"
   await addDoc(collection(db, "chats", phone, "messages"), {
     sender: "user",
     text,
@@ -44,7 +65,7 @@ async function handleBotAction({ phone, text, nlpResult, slotResult }) {
     }
   }
 
-  // Log bot reply to "chats"
+  // Log bot reply to "chats/{phone}/messages"
   await addDoc(collection(db, "chats", phone, "messages"), {
     sender: "bot",
     text: replyText,

@@ -628,50 +628,58 @@
       const chatWindowEl = document.getElementById("chatWindow");
       const sendMessageBtn = document.getElementById("sendMessageBtn");
 
-      // Load chat list in real-time
-      const loadChatThreads = () => {
-        const chatsCol = collection(db, "chats");
-
-        onSnapshot(chatsCol, (snapshot) => {
-          chatThreadsEl.innerHTML = "";
-          snapshot.forEach((docSnap) => {
-            const userId = docSnap.id;
-            const li = document.createElement("li");
-            li.className = "list-group-item list-group-item-action";
-            li.textContent = `📱 ${userId}`;
-            li.onclick = () => loadMessagesForUser(userId);
-            chatThreadsEl.appendChild(li);
-          });
-        });
-      };
-
       // Load messages for one user in real-time
       const loadMessagesForUser = async (userId) => {
-        chatWindowEl.innerHTML = "<div>Cargando mensajes...</div>";
+        chatWindowEl.innerHTML = "<div>⏳ Cargando mensajes...</div>";
+        console.log(`📥 Loading messages for: ${userId}`);
 
         const msgRef = collection(db, "chats", userId, "messages");
         const q = query(msgRef, orderBy("timestamp"));
 
-        onSnapshot(q, (snapshot) => {
-          chatWindowEl.innerHTML = "";
-
-          snapshot.forEach((msgDoc) => {
-            const { direction, text } = msgDoc.data();
-
-            console.log(`[Message] ${direction}`, text);
-
-            const bubble = document.createElement("div");
-            bubble.classList.add("chat-bubble");
-            bubble.classList.add(
-              direction === "inbound" ? "user-message" : "admin-message"
+        onSnapshot(
+          q,
+          (snapshot) => {
+            console.log(
+              `📦 Message snapshot for ${userId} (size: ${snapshot.size})`
             );
 
-            bubble.textContent = text;
-            chatWindowEl.appendChild(bubble);
-          });
+            chatWindowEl.innerHTML = "";
 
-          chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
-        });
+            if (snapshot.empty) {
+              console.warn(`⚠️ No messages found for ${userId}`);
+            }
+
+            snapshot.forEach((msgDoc) => {
+              const data = msgDoc.data();
+              const { direction, text, message, sender } = data;
+
+              const content = text || message || "[sin contenido]";
+
+              console.log(
+                `💬 ${direction || sender || "?"} | ${content} | Timestamp: ${
+                  data.timestamp?.toDate?.() || "N/A"
+                }`
+              );
+
+              const bubble = document.createElement("div");
+              bubble.classList.add("chat-bubble");
+
+              if (direction === "inbound" || sender === "user") {
+                bubble.classList.add("user-message");
+              } else {
+                bubble.classList.add("admin-message");
+              }
+
+              bubble.textContent = content;
+              chatWindowEl.appendChild(bubble);
+            });
+
+            chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
+          },
+          (error) => {
+            console.error("❌ Error in messages snapshot:", error);
+          }
+        );
       };
 
       // Send message
@@ -689,56 +697,75 @@
       });
 
       // Init
-      loadChatThreads();
+      const loadChatThreads = () => {
+        const chatsCol = collection(db, "chats");
 
-      const chatThreadsList = document.getElementById("chatThreads");
-      const messageInput = document.getElementById("messageInput");
+        console.log("📡 Attempting to load chat threads...");
 
-      let activePhone = null;
+        onSnapshot(
+          chatsCol,
+          (snapshot) => {
+            console.log("📥 Received snapshot for chats collection.");
+            console.log("📦 Total documents in snapshot:", snapshot.size);
 
-      // Load message history for a user
-      async function loadMessages(phone) {
-        activePhone = phone;
-        chatWindowEl.innerHTML = "";
+            chatThreadsEl.innerHTML = "";
 
-        const messagesSnapshot = await db
-          .collection("chats")
-          .doc(phone)
-          .collection("messages")
-          .orderBy("timestamp", "asc")
-          .get();
+            if (snapshot.empty) {
+              console.warn(
+                "⚠️ No chat threads found (snapshot.empty === true)."
+              );
+            }
 
-        messagesSnapshot.forEach((doc) => {
-          const { sender, text } = doc.data();
-          const msgDiv = document.createElement("div");
-          msgDiv.textContent = text;
-          msgDiv.className =
-            sender === "user"
-              ? "text-start mb-2 p-2 bg-white rounded"
-              : "text-end mb-2 p-2 bg-light rounded";
-          chatWindowEl.appendChild(msgDiv);
-        });
+            snapshot.forEach((docSnap, index) => {
+              const userId = docSnap.id;
+              const data = docSnap.data();
 
-        chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
-      }
+              console.log(`🔹 Document #${index + 1}`);
+              console.log(`   🔑 ID: ${userId}`);
+              console.log(`   📄 Data:`, data);
+
+              if (!data) {
+                console.warn(`⚠️ Document ${userId} has no data.`);
+                return;
+              }
+
+              const li = document.createElement("li");
+              li.className = "list-group-item list-group-item-action";
+              li.textContent = `📱 ${userId}`;
+              li.onclick = () => {
+                console.log("📲 Loading messages for user:", userId);
+                loadMessagesForUser(userId);
+              };
+              chatThreadsEl.appendChild(li);
+            });
+
+            if (!snapshot.empty && chatThreadsEl.children.length === 0) {
+              console.warn(
+                "🚨 Snapshot had docs, but UI did not render any threads!"
+              );
+            }
+          },
+          (error) => {
+            console.error("❌ Error in chat threads snapshot:", error);
+          }
+        );
+      };
+
+      window.loadChatThreads = loadChatThreads;
 
       // Send new message manually
       sendMessageBtn.addEventListener("click", async () => {
         const text = messageInput.value.trim();
         if (!text || !activePhone) return;
 
-        await db
-          .collection("chats")
-          .doc(activePhone)
-          .collection("messages")
-          .add({
-            sender: "admin",
-            text,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          });
+        await addDoc(collection(db, "chats", activePhone, "messages"), {
+          sender: "admin",
+          text,
+          timestamp: serverTimestamp(),
+        });
 
         messageInput.value = "";
-        await loadMessages(activePhone);
+        await loadMessagesForUser(activePhone);
       });
 
       // Load threads on start
@@ -1806,6 +1833,19 @@
           console.error("❌ Error logging edit history:", err);
         }
       }
+
+      console.log(
+        "🚀 Waiting for Firebase module to load before calling loadChatThreads"
+      );
+
+      window.addEventListener("load", () => {
+        if (typeof window.loadChatThreads === "function") {
+          console.log("✅ Calling loadChatThreads after load");
+          window.loadChatThreads();
+        } else {
+          console.warn("⚠️ loadChatThreads is still not defined on window");
+        }
+      });
     </script>
   </body>
 </html>
