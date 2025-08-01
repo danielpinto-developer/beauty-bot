@@ -65,31 +65,27 @@ async def receive_message(request: Request):
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        # Call BERT intent
         try:
-            intent_res = requests.post(
+            intent_response = requests.post(
                 "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
                 json={"text": text}
             )
-            intent_res.raise_for_status()
-            intent_json = intent_res.json()
-            intent = intent_json.get("intent")
+            intent_response.raise_for_status()
+            intent_response = intent_response.json()
         except Exception as bert_err:
             print("❌ Error calling BERT intent:", str(bert_err))
-            intent = None
+            intent_response = {"intent": None}
 
-        # Decide reply
+        intent = intent_response.get("intent")
+
         if intent == "escalate_to_human":
             reply = "En un momento te contactamos con una persona del equipo 💬"
         else:
             try:
-                openrouter_key = os.getenv("OPENROUTER_API_KEY")
-                if not openrouter_key:
-                    raise Exception("Missing OPENROUTER_API_KEY")
-                reply = await get_openrouter_reply(text)
+                reply = get_openrouter_reply(text)
             except Exception as or_err:
                 print("❌ Error calling OpenRouter:", str(or_err))
-                reply = "Lo siento, tuvimos un problema procesando tu mensaje 🤖"
+                reply = "Lo siento, ocurrió un error al generar la respuesta 🤖"
 
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "bot",
