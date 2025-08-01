@@ -3,16 +3,25 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // 🔌 Imports
-const { nlpRouter } = require("./nlpRouter");
 const { handleBotAction } = require("./messageDispatcher");
-const { handleUnsupportedMedia } = require("../mediaHandler");
-const { getSlotsFromText } = require("./slotFiller");
+const { handleUnsupportedMedia } = require("./mediaHandler");
+const {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+} = require("firebase-admin/firestore");
 
+const classifyTier1 = require("./classifyTier1");
+const classifyTier2 = require("./classifyTier2");
+const classifyTier3 = require("./classifyTier3");
+
+const db = getFirestore();
 app.use(express.json());
 
 // ✅ Meta webhook verification
 app.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = "beauty-bot-token"; // must match Meta config
+  const VERIFY_TOKEN = "beauty-bot-token";
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
@@ -38,9 +47,26 @@ app.post("/webhook", async (req, res) => {
 
     const phone = messageEntry.from;
     const messageText = messageEntry.text?.body;
+    const messageId = messageEntry.id;
+
+    if (!phone || !messageText) {
+      console.log("❌ Missing phone or message text");
+      return res.status(200).send("Invalid payload");
+    }
 
     console.log("📞 From:", phone);
     console.log("💬 Text:", messageText);
+
+    // ✅ Deduplication logic
+    const messageMetaRef = doc(db, "chats", phone, "metadata", "lastMessage");
+    const previous = await getDoc(messageMetaRef);
+
+    if (previous.exists() && previous.data().id === messageId) {
+      console.log("🔁 Duplicate message detected. Skipping.");
+      return res.status(200).send("Duplicate ignored");
+    }
+
+    await setDoc(messageMetaRef, { id: messageId });
 
     // 🎥 Media handling
     const mediaCheck = handleUnsupportedMedia(messageEntry);
@@ -59,24 +85,41 @@ app.post("/webhook", async (req, res) => {
       return res.status(200).send("Handled media manually");
     }
 
-    if (!messageText || !phone) {
-      console.log("❌ Invalid message: missing text or phone");
-      return res.status(200).send("Invalid message");
+    // 🧠 Tiered intent processing
+    const tier1 = classifyTier1(messageText);
+    if (tier1) {
+      console.log("🎯 Matched Tier 1:", tier1);
+      await handleBotAction({
+        phone,
+        text: messageText,
+        nlpResult: tier1,
+        slotResult: {},
+      });
+      return res.status(200).send("Tier 1 handled");
     }
 
-    // 🧠 NLP & Slot Filling
-    const nlpResult = await nlpRouter(messageText);
-    const slotResult = await getSlotsFromText(messageText);
+    const tier2 = classifyTier2(messageText);
+    if (tier2) {
+      console.log("🔍 Matched Tier 2:", tier2);
+      await handleBotAction({
+        phone,
+        text: messageText,
+        nlpResult: tier2.nlpResult,
+        slotResult: tier2.slotResult,
+      });
+      return res.status(200).send("Tier 2 handled");
+    }
 
-    console.log("🚀 Webhook received:", { phone, messageText });
-    console.log("🧠 NLP Result:", nlpResult);
-    console.log("🧠 Slot Result:", slotResult);
+    const tier3 = await classifyTier3(messageText);
+    console.log("🤖 Using Tier 3 AI:", tier3.nlpResult);
+    await handleBotAction({
+      phone,
+      text: messageText,
+      nlpResult: tier3.nlpResult,
+      slotResult: tier3.slotResult,
+    });
 
-    await handleBotAction({ phone, text: messageText, nlpResult, slotResult });
-
-    console.log("✅ handleBotAction completed");
-
-    return res.status(200).send("Message processed");
+    return res.status(200).send("Tier 3 handled");
   } catch (error) {
     console.error("❌ Webhook error:", error);
     return res.status(500).send("Internal server error");
