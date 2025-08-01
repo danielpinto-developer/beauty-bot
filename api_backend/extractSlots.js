@@ -6,7 +6,7 @@ function extractSlots(messageText) {
     const options = {
       mode: "json",
       pythonOptions: ["-u"],
-      scriptPath: path.join(__dirname, "../spacy_ner_training"),
+      scriptPath: path.join(__dirname, "spacy_ner_training"),
       args: [messageText],
     };
 

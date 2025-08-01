@@ -2,19 +2,20 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
 
-// 🔌 Imports
 const { handleBotAction } = require("./messageDispatcher");
 const { handleUnsupportedMedia } = require("./mediaHandler");
+const { getSlotsFromText } = require("./slotFiller");
+
+const classifyTier1 = require("./classifyTier1");
+const classifyTier2 = require("./classifyTier2");
+const classifyTier3 = require("./classifyTier3");
+
 const {
   getFirestore,
   doc,
   getDoc,
   setDoc,
 } = require("firebase-admin/firestore");
-
-const classifyTier1 = require("./classifyTier1");
-const classifyTier2 = require("./classifyTier2");
-const classifyTier3 = require("./classifyTier3");
 
 const db = getFirestore();
 app.use(express.json());
@@ -85,7 +86,9 @@ app.post("/webhook", async (req, res) => {
       return res.status(200).send("Handled media manually");
     }
 
-    // 🧠 Tiered intent processing
+    // 🎯 Tiered NLP logic
+
+    // Tier 1 (simple keyword match)
     const tier1 = classifyTier1(messageText);
     if (tier1) {
       console.log("🎯 Matched Tier 1:", tier1);
@@ -98,28 +101,36 @@ app.post("/webhook", async (req, res) => {
       return res.status(200).send("Tier 1 handled");
     }
 
+    // Tier 2 (semi-structured patterns)
     const tier2 = classifyTier2(messageText);
     if (tier2) {
       console.log("🔍 Matched Tier 2:", tier2);
+      const slotResult = await getSlotsFromText(messageText); // ✅ Extract slots
       await handleBotAction({
         phone,
         text: messageText,
-        nlpResult: tier2.nlpResult,
-        slotResult: tier2.slotResult,
+        nlpResult: tier2,
+        slotResult,
       });
       return res.status(200).send("Tier 2 handled");
     }
 
+    // Tier 3 (full NLP)
     const tier3 = await classifyTier3(messageText);
-    console.log("🤖 Using Tier 3 AI:", tier3.nlpResult);
-    await handleBotAction({
-      phone,
-      text: messageText,
-      nlpResult: tier3.nlpResult,
-      slotResult: tier3.slotResult,
-    });
+    if (tier3?.nlpResult) {
+      console.log("🤖 Using Tier 3 AI:", tier3.nlpResult);
+      const slotResult = await getSlotsFromText(messageText); // ✅ Extract slots
+      await handleBotAction({
+        phone,
+        text: messageText,
+        nlpResult: tier3.nlpResult,
+        slotResult,
+      });
+      return res.status(200).send("Tier 3 handled");
+    }
 
-    return res.status(200).send("Tier 3 handled");
+    console.log("⚠️ No tier matched. Fallback handling.");
+    return res.status(200).send("No action taken");
   } catch (error) {
     console.error("❌ Webhook error:", error);
     return res.status(500).send("Internal server error");
