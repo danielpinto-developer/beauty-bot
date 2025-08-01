@@ -93,8 +93,10 @@ async def receive_message(request: Request):
                 reply = "Lo siento, ocurrió un error al generar la respuesta 🤖"
 
         db.collection("chats").document(phone).collection("messages").add({
-            "sender": "bot",
-            "message": reply,
+            "sender": "user",
+            "message": text,
+            "text": text,
+            "direction": "inbound",
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
@@ -119,8 +121,10 @@ async def send_admin_message(data: dict):
     send_whatsapp_message(phone, message)
 
     db.collection("chats").document(phone).collection("messages").add({
-        "sender": "admin",
-        "message": message,
+        "sender": "bot",
+        "message": reply,
+        "text": reply,
+        "direction": "outbound",
         "timestamp": firestore.SERVER_TIMESTAMP,
     })
 
