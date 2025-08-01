@@ -679,7 +679,7 @@
         const text = messageInput.value.trim();
         if (!text || !activePhone) return;
 
-        await addDoc(collection(db, "chats", activePhone, "messages"), {
+        await addDoc(collection(db, "conversations", activePhone, "messages"), {
           sender: "admin",
           text,
           timestamp: serverTimestamp(),
@@ -702,7 +702,7 @@
         chatWindowEl.innerHTML = "";
 
         const messagesSnapshot = await db
-          .collection("chats")
+          .collection("conversations")
           .doc(phone)
           .collection("messages")
           .orderBy("timestamp", "asc")
