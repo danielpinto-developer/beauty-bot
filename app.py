@@ -35,9 +35,8 @@ async def verify_webhook(request: Request):
 async def receive_message(request: Request):
     try:
         data = await request.json()
-        print("📥 Incoming webhook data:", data)  # Add logging
+        print("📥 Incoming webhook data:", data)
 
-        # Defensive parsing
         entry = data.get("entry", [{}])[0]
         changes = entry.get("changes", [{}])[0]
         value = changes.get("value", {})
@@ -55,37 +54,43 @@ async def receive_message(request: Request):
             print("⚠️ Missing phone or text:", phone, text)
             return {"status": "invalid message"}
 
-        # Firestore check
         paused_doc = db.collection("bot_paused").document(phone).get()
         if paused_doc.exists and paused_doc.to_dict().get("paused", False):
             print("⏸️ Bot is paused for", phone)
             return {"status": "bot paused"}
 
-        # Log user message
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "user",
             "message": text,
             "timestamp": firestore.SERVER_TIMESTAMP,
         })
 
-        # BERT intent prediction
+        # Call BERT intent
         try:
-            intent_response = requests.post(
+            intent_res = requests.post(
                 "https://beautybot-api-320221601178.us-central1.run.app/predict-intent",
                 json={"text": text}
-            ).json()
+            )
+            intent_res.raise_for_status()
+            intent_json = intent_res.json()
+            intent = intent_json.get("intent")
         except Exception as bert_err:
             print("❌ Error calling BERT intent:", str(bert_err))
-            intent_response = {}
+            intent = None
 
-        intent = intent_response.get("intent")
-
+        # Decide reply
         if intent == "escalate_to_human":
             reply = "En un momento te contactamos con una persona del equipo 💬"
         else:
-            reply = await get_openrouter_reply(text)
+            try:
+                openrouter_key = os.getenv("OPENROUTER_API_KEY")
+                if not openrouter_key:
+                    raise Exception("Missing OPENROUTER_API_KEY")
+                reply = await get_openrouter_reply(text)
+            except Exception as or_err:
+                print("❌ Error calling OpenRouter:", str(or_err))
+                reply = "Lo siento, tuvimos un problema procesando tu mensaje 🤖"
 
-        # Log bot response
         db.collection("chats").document(phone).collection("messages").add({
             "sender": "bot",
             "message": reply,
@@ -96,7 +101,7 @@ async def receive_message(request: Request):
         return {"status": "message sent"}
 
     except Exception as e:
-        print("❌ Uncaught webhook error:", str(e))  # Log full error
+        print("❌ Uncaught webhook error:", str(e))
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 @app.post("/send")
