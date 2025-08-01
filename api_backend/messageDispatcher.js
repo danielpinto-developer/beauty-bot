@@ -13,7 +13,6 @@ const db = getFirestore();
 
 const notifyMoni = async (phone, reason) => {
   console.log(`📣 Notify Moni: ${phone} needs manual follow-up (${reason})`);
-  // Optional: notify Moni via WhatsApp API
 };
 
 const precios = {
@@ -79,12 +78,14 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
     slots: slotResult,
   });
 
+  // 💬 Greeting
   if (intent === "greeting") {
     return logAndSend(
       `Hola! Soy BeautyBot, la asistente de Beauty Blossoms en Zapopan, Jalisco. Podemos ofrecerte servicios de pestañas, uñas, cejas, enzimas, depilación y cabello. ¡Cuéntame, ¿qué servicio prefieres? Y ¿qué día te gustaría agendar tu cita? 😊`
     );
   }
 
+  // 🙏 Gratitude
   if (intent === "gratitude") {
     const fecha = slotResult?.fechaConfirmada || "tu próxima cita";
     return logAndSend(
@@ -92,6 +93,7 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
     );
   }
 
+  // 💸 Price FAQs
   if (intent === "faq_precio" && slotResult?.servicio) {
     const price = precios[slotResult.servicio.toLowerCase()];
     const reply = price
@@ -100,6 +102,7 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
     return logAndSend(reply);
   }
 
+  // 📆 Booking Flow
   if (intent === "book_appointment") {
     const fecha = slotResult?.fecha;
     const hora = slotResult?.hora;
@@ -113,15 +116,14 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
       if (price) reply += ` (costo: ${price})`;
     }
 
-    if (fecha && hora) {
+    if (fecha && hora && servicio) {
       reply += ` el ${fecha} a las ${hora}. En unos momentos confirmamos la disponibilidad de tu cita ✨`;
     } else {
-      reply += ". ";
       const prompts = [];
       if (!servicio) prompts.push("¿Qué servicio deseas?");
       if (!fecha) prompts.push("¿Qué día te gustaría agendar tu cita?");
       if (!hora) prompts.push("¿A qué hora te gustaría venir?");
-      reply += prompts.join(" ");
+      reply += ". " + prompts.join(" ");
     }
 
     await notifyMoni(
@@ -134,6 +136,7 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
     return logAndSend(reply);
   }
 
+  // ✅ Confirmation
   if (intent === "confirm_availability") {
     const fecha = slotResult?.fecha || "tu cita";
     const hora = slotResult?.hora || "la hora acordada";
@@ -148,10 +151,12 @@ Una vez hecho el pago, mándanos el comprobante 💖`;
     return logAndSend(reply);
   }
 
+  // 🔍 Manual reviews
   if (action === "manual_review" || action === "manual_media_review") {
     await notifyMoni(phone, action);
   }
 
+  // 🧠 Fallback logic
   let replyText = response;
   if (action === "fallback") {
     try {
