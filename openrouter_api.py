@@ -15,9 +15,14 @@ Siempre que des un precio, menciona que es en bb27 Studio y pregunta: "¿Qué d�
 """
 
 def get_openrouter_reply(user_text):
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        print("❌ OPENROUTER_API_KEY not set")
+        return "Lo siento, no tengo acceso a OpenRouter en este momento."
+
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
-        "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
     body = {
@@ -28,22 +33,30 @@ def get_openrouter_reply(user_text):
             {"role": "system", "content": system_prompt},
             {
                 "role": "user",
-                "content": user_text
+                "content": user_text.strip()
                 + "\n\nRecuerda: solo responde con servicios de Beauty Blossoms. No hables de Amazon, productos o salones externos. Sé breve.",
             },
         ],
     }
 
-    res = requests.post(url, headers=headers, json=body)
-    res.raise_for_status()
-    data = res.json()
-    raw = (
-        data.get("choices", [{}])[0]
-        .get("message", {})
-        .get("content", "Lo siento, no entendí eso.")
-        .strip()
-    )
+    try:
+        res = requests.post(url, headers=headers, json=body)
+        res.raise_for_status()
+        data = res.json()
 
-    # Limit to max 3 sentences
-    sentences = raw.split(". ")
-    return ". ".join(sentences[:3]).strip()
+        # Parse message content safely
+        content = (
+            data.get("choices", [{}])[0]
+            .get("message", {})
+            .get("content", "")
+            .strip()
+        )
+
+        # Limit to 3 sentences max
+        sentences = content.split(". ")
+        reply = ". ".join(sentences[:3]).strip()
+        return reply or "Lo siento, no entendí eso."
+
+    except requests.exceptions.RequestException as e:
+        print("❌ OpenRouter API error:", e)
+        return "Lo siento, hubo un error al procesar tu mensaje con la inteligencia artificial 🤖"
