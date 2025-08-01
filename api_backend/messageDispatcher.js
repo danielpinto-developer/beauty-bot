@@ -1,12 +1,11 @@
-// api_backend/messageDispatcher.js
 const { sendMessage } = require("./whatsapp");
 const {
   getFirestore,
   collection,
   addDoc,
-  serverTimestamp,
   doc,
   setDoc,
+  serverTimestamp,
 } = require("firebase-admin/firestore");
 const { getOpenRouterReply } = require("./openrouterFallback");
 
@@ -16,6 +15,31 @@ const notifyMoni = async (phone, reason) => {
   console.log(`📣 Notify Moni: ${phone} needs manual follow-up (${reason})`);
 };
 
+async function logMessage({
+  phone,
+  text,
+  sender,
+  direction,
+  intent = null,
+  confidence = null,
+  action = null,
+  slots = null,
+}) {
+  const data = {
+    text,
+    sender,
+    direction,
+    timestamp: serverTimestamp(),
+  };
+
+  if (intent) data.intent = intent;
+  if (confidence) data.confidence = confidence;
+  if (action) data.action = action;
+  if (slots) data.slots = slots;
+
+  await addDoc(collection(db, "chats", phone, "messages"), data);
+}
+
 async function handleBotAction({ phone, text, nlpResult, slotResult }) {
   console.log("📬 handleBotAction START", {
     phone,
@@ -23,31 +47,30 @@ async function handleBotAction({ phone, text, nlpResult, slotResult }) {
     nlpResult,
     slotResult,
   });
+
   const { intent, confidence, action, response } = nlpResult;
 
-  // Ensure the parent "chats/{phone}" doc exists so admin panel can see it
+  // Ensure parent doc exists
   try {
     await setDoc(
       doc(db, "chats", phone),
-      {
-        createdAt: serverTimestamp(),
-      },
+      { last_updated: serverTimestamp() },
       { merge: true }
     );
   } catch (err) {
-    console.error("⚠️ Failed to create parent chat doc:", err);
+    console.error("⚠️ Failed to set parent chat doc:", err);
   }
 
-  // Log user message to "chats/{phone}/messages"
-  await addDoc(collection(db, "chats", phone, "messages"), {
-    sender: "user",
+  // Log inbound user message
+  await logMessage({
+    phone,
     text,
+    sender: "user",
+    direction: "inbound",
     intent,
     confidence,
     action,
     slots: slotResult,
-    direction: "inbound",
-    timestamp: serverTimestamp(),
   });
 
   if (action === "manual_review" || action === "manual_media_review") {
@@ -57,22 +80,22 @@ async function handleBotAction({ phone, text, nlpResult, slotResult }) {
   let replyText = response;
   if (action === "fallback") {
     try {
-      const gptResponse = await getOpenRouterReply(text);
-      replyText = gptResponse;
+      replyText = await getOpenRouterReply(text);
     } catch (err) {
       console.error("❌ GPT fallback failed:", err);
       replyText = "Lo siento, hubo un error al procesar tu mensaje 🤖";
     }
   }
 
-  // Log bot reply to "chats/{phone}/messages"
-  await addDoc(collection(db, "chats", phone, "messages"), {
-    sender: "bot",
+  // Log outbound bot reply
+  await logMessage({
+    phone,
     text: replyText,
+    sender: "bot",
     direction: "outbound",
-    timestamp: serverTimestamp(),
   });
 
+  // Send WhatsApp reply
   await sendMessage({ to: phone, text: replyText });
 }
 
