@@ -26,7 +26,7 @@ def get_openrouter_reply(user_text):
         "Content-Type": "application/json",
     }
     body = {
-        "model": "openrouter/mistralai/mixtral-8x7b-instruct",
+        "model": "mistral/mistral-7b-instruct",  # ✅ Switched to supported model
         "temperature": 0.4,
         "max_tokens": 120,
         "messages": [
@@ -41,7 +41,9 @@ def get_openrouter_reply(user_text):
 
     try:
         res = requests.post(url, headers=headers, json=body)
-        res.raise_for_status()
+        if res.status_code != 200:
+            print("❌ OpenRouter raw response:", res.text)
+            res.raise_for_status()
         data = res.json()
 
         # Parse message content safely
