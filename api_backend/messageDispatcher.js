@@ -79,7 +79,6 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
     slots: slotResult,
   });
 
-  // 🌸 Tiered logic
   if (intent === "greeting") {
     return logAndSend(
       `Hola! Soy BeautyBot, la asistente de Beauty Blossoms en Zapopan, Jalisco. Podemos ofrecerte servicios de pestañas, uñas, cejas, enzimas, depilación y cabello. ¡Cuéntame, ¿qué servicio prefieres? Y ¿qué día te gustaría agendar tu cita? 😊`
@@ -106,29 +105,23 @@ async function messageDispatcher({ phone, text, nlpResult, slotResult }) {
     const hora = slotResult?.hora;
     const servicio = slotResult?.servicio;
 
-    let reply = `Claro`;
+    const price = servicio ? precios[servicio.toLowerCase()] : null;
 
+    let reply = "Claro";
     if (servicio) {
       reply += `, podemos agendar tu cita para ${servicio}`;
-      const price = precios[servicio.toLowerCase()];
       if (price) reply += ` (costo: ${price})`;
     }
 
     if (fecha && hora) {
       reply += ` el ${fecha} a las ${hora}. En unos momentos confirmamos la disponibilidad de tu cita ✨`;
     } else {
-      const missing = [];
-      if (!fecha) missing.push("fecha");
-      if (!hora) missing.push("hora");
-      if (!servicio) missing.push("servicio");
-
-      const prompts = {
-        fecha: "¿Qué día te gustaría agendar tu cita?",
-        hora: "¿A qué hora te gustaría venir?",
-        servicio: "¿Qué servicio deseas?",
-      };
-
-      reply += ". " + missing.map((m) => prompts[m]).join(" ");
+      reply += ". ";
+      const prompts = [];
+      if (!servicio) prompts.push("¿Qué servicio deseas?");
+      if (!fecha) prompts.push("¿Qué día te gustaría agendar tu cita?");
+      if (!hora) prompts.push("¿A qué hora te gustaría venir?");
+      reply += prompts.join(" ");
     }
 
     await notifyMoni(
